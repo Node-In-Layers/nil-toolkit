@@ -1,7 +1,7 @@
 {
   "name": "@node-in-layers/toolkit",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The official toolkit for creating/updating/maintaining Node In Layer based systems.",
   "main": "index.js",
   "bin":{
@@ -64,7 +64,7 @@
     "typescript": "5.3.3"
   },
   "dependencies": {
-    "@node-in-layers/core": "^1.0.1",
+    "@node-in-layers/core": "^1.0.2",
     "argparse": "^2.0.1",
     "chalk": "^4.1.2",
     "cross-spawn": "^7.0.6",
