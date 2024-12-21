@@ -5,9 +5,9 @@ type ToolkitServicesLayer = {
 }
 
 enum Command {
-  newApp = 'newApp',
-  newPackage = 'newPackage',
-  newSystem = 'newSystem',
+  createApp = 'createApp',
+  createPackage = 'createPackage',
+  createSystem = 'createSystem',
 }
 
 export { ToolkitServicesLayer, ToolkitServices, Command }

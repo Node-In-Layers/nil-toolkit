@@ -9,12 +9,12 @@ const create = (
     PackageFeaturesLayer
   >
 ) => {
-  const newPackage = promiseWrap(
-    dependencies.features['nil-toolkit/package'].createNewPackage
+  const createPackage = promiseWrap(
+    dependencies.features['nil-toolkit/package'].createPackage
   )
 
   return {
-    newPackage,
+    createPackage,
   }
 }
 

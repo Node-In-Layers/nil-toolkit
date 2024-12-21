@@ -6,7 +6,7 @@ const create = (
   dependencies: SimpleFeaturesDependencies<PackageServicesLayer>
 ) => {
   const ourServices = dependencies.services['nil-toolkit/package']
-  const createNewPackage = async ({
+  const createPackage = async ({
     packageName,
     packageType,
   }: {
@@ -40,7 +40,7 @@ const create = (
   }
 
   return {
-    createNewPackage,
+    createPackage,
   }
 }
 

@@ -32,7 +32,7 @@ enum PackageType {
 }
 
 type PackageFeatures = Readonly<{
-  createNewPackage: ({
+  createPackage: ({
     packageName,
     packageType,
   }: {

@@ -18,10 +18,10 @@ const _parseArguments = () => {
     title: 'command',
     dest: 'command',
   })
-  const newApp = subParsers.add_parser('new-app', {
+  const newApp = subParsers.add_parser('create-app', {
     help: 'Create a new app in an existing system.',
   })
-  const packageParser = subParsers.add_parser('new-package', {
+  const packageParser = subParsers.add_parser('create-package', {
     help: 'Create a new package.',
   })
   packageParser.add_argument('packageName', {
@@ -30,13 +30,14 @@ const _parseArguments = () => {
   packageParser.add_argument('packageType', {
     help: 'typescript, esm, commonjs',
   })
-  const addSystemParser = subParsers.add_parser('new-system', {
+  const addSystemParser = subParsers.add_parser('create-system', {
     help: 'Create a new Node In Layers system.',
   })
 
   const args = parser.parse_args()
   if (!args.command) {
     parser.print_help()
+    return
   }
   return args
 }
