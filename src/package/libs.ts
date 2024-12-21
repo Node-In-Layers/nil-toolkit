@@ -1,9 +1,12 @@
-import {FinalizedTemplate, TemplatedPackageFile} from "./types.js"
-import kebabCase from "lodash/kebabCase.js"
+import kebabCase from 'lodash/kebabCase.js'
 import startCase from 'lodash/startCase.js'
-import hb from "handlebars"
+import hb from 'handlebars'
+import { FinalizedTemplate, TemplatedPackageFile } from './types.js'
 
-const applyTemplates = (templates: readonly TemplatedPackageFile[], data: {packageName: string}) : readonly FinalizedTemplate[] => {
+const applyTemplates = (
+  templates: readonly TemplatedPackageFile[],
+  data: { packageName: string }
+): readonly FinalizedTemplate[] => {
   const templateData = {
     packageName: data.packageName,
     packageNameTitleCase: startCase(data.packageName).replaceAll(' ', ''),
@@ -18,12 +21,6 @@ const applyTemplates = (templates: readonly TemplatedPackageFile[], data: {packa
   })
 }
 
-const createValidPackageName = (packageName: string) => {
-  return kebabCase(packageName)
-}
+const createValidPackageName = kebabCase
 
-
-export {
-  applyTemplates,
-  createValidPackageName,
-}
+export { applyTemplates, createValidPackageName }

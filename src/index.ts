@@ -1,5 +1,3 @@
 const name = 'nil-toolkit'
-export * from './package/index.js'
-export {
-  name
-}
+export * as nilPackage from './package/index.js'
+export { name }

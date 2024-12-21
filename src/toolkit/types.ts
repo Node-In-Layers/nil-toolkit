@@ -1,18 +1,13 @@
-type ToolkitServices = Readonly<{
-}>
+type ToolkitServices = Readonly<object>
 
 type ToolkitServicesLayer = {
   'nil-toolkit/toolkit': ToolkitServices
 }
 
-enum Command  {
-  newApp='newApp',
-  newPackage='newPackage',
-  newSystem='newSystem',
+enum Command {
+  newApp = 'newApp',
+  newPackage = 'newPackage',
+  newSystem = 'newSystem',
 }
 
-export {
-  ToolkitServicesLayer,
-  ToolkitServices,
-  Command,
-}
+export { ToolkitServicesLayer, ToolkitServices, Command }

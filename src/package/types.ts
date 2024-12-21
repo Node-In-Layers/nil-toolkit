@@ -1,8 +1,13 @@
 type PackageServices = Readonly<{
-  createPackageDirectory: (packageName: string) => void,
-  readGeneralTemplates: () => Promise<readonly TemplatedPackageFile[]>,
-  readTemplates: (packageType: PackageType) => Promise<readonly TemplatedPackageFile[]>,
-  writeTemplates: (packageName: string, templates: readonly Required<FinalizedTemplate>[]) => void
+  createPackageDirectory: (packageName: string) => void
+  readGeneralTemplates: () => Promise<readonly TemplatedPackageFile[]>
+  readTemplates: (
+    packageType: PackageType
+  ) => Promise<readonly TemplatedPackageFile[]>
+  writeTemplates: (
+    packageName: string,
+    templates: readonly Required<FinalizedTemplate>[]
+  ) => void
   executeNpm: (packageName: string, command: string, args?: string[]) => void
 }>
 
@@ -11,23 +16,29 @@ type PackageServicesLayer = Readonly<{
 }>
 
 type TemplatedPackageFile = {
-  relativePath: string,
+  relativePath: string
   sourceData: string
 }
 
 type FinalizedTemplate = Readonly<{
-  relativePath: string,
+  relativePath: string
   templatedData: string
 }>
 
 enum PackageType {
-  typescript='typescript',
-  esm='esm',
-  commonjs='commonjs'
+  typescript = 'typescript',
+  esm = 'esm',
+  commonjs = 'commonjs',
 }
 
 type PackageFeatures = Readonly<{
-  createNewPackage: ({packageName, packageType}:{ packageName: string, packageType: PackageType}) => Promise<void>
+  createNewPackage: ({
+    packageName,
+    packageType,
+  }: {
+    packageName: string
+    packageType: PackageType
+  }) => Promise<void>
 }>
 
 type PackageFeaturesLayer = Readonly<{

@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 import { ArgumentParser } from 'argparse'
 import { loadSystem } from '../dist/entries.js'
-import camelCase from "lodash/camelCase.js"
-import esMain from "es-main"
+import camelCase from 'lodash/camelCase.js'
+import esMain from 'es-main'
 
 const _parseArguments = () => {
   const parser = new ArgumentParser({
-    description:
-      'A toolkit for dealing with Node In Layers systems.',
+    description: 'A toolkit for dealing with Node In Layers systems.',
   })
   parser.add_argument('-f', '--logFormat', {
     help: 'Sets the format for logging. Defaults to simple.',
@@ -42,7 +41,6 @@ const _parseArguments = () => {
   return args
 }
 
-
 const main = async () => {
   const args = _parseArguments()
   if (!args) {
@@ -51,16 +49,12 @@ const main = async () => {
 
   const system = await loadSystem(args)
   const command = camelCase(args.command)
-  await (system.features['nil-toolkit/toolkit'][command](args)
-    .catch(e => {
-      console.error(e.message)
-      console.error(e)
-    })
-  )
+  await system.features['nil-toolkit/toolkit'][command](args).catch(e => {
+    console.error(e.message)
+    console.error(e)
+  })
 }
 
 if (esMain(import.meta)) {
   main()
 }
-
-
