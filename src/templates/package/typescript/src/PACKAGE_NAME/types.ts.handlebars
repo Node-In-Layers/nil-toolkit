@@ -1,0 +1,18 @@
+type {{packageNameTitleCase}}Services = Readonly<object>
+
+type {{packageNameTitleCase}}ServicesLayer = Readonly<{
+  '{{packageName}}/{{packageName}}': {{packageNameTitleCase}}Services
+}>
+
+type {{packageNameTitleCase}}Features = Readonly<object>
+
+type {{packageNameTitleCase}}FeaturesLayer = Readonly<{
+  '{{packageName}}/{{packageName}}': {{packageNameTitleCase}}Features
+}>
+
+export {
+  {{packageNameTitleCase}}Services,
+  {{packageNameTitleCase}}ServicesLayer,
+  {{packageNameTitleCase}}Features,
+  {{packageNameTitleCase}}FeaturesLayer,
+}
