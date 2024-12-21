@@ -1,14 +1,14 @@
 {
   "name": "@node-in-layers/toolkit",
   "type": "module",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "The official toolkit for creating/updating/maintaining Node In Layer based systems.",
   "main": "index.js",
   "bin":{
     "nil-toolkit": "bin/nil-toolkit.js"
   },
   "scripts": {
-    "build": "rm -Rf ./dist && tsc -p ./tsconfig.json && cp package.json ./dist && cp README.md ./dist && cp -R ./src/templates ./dist && cp -R ./bin/ ./dist/",
+    "build": "./bin/build.sh",
     "build:watch": "nodemon -e '*' --watch ./src --exec \"npm run build || exit 1\"",
     "commit": "cz",
     "dist": "npm run build && cd dist && npm publish",
