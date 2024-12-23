@@ -1,13 +1,14 @@
 import kebabCase from 'lodash/kebabCase.js'
 import startCase from 'lodash/startCase.js'
 import hb from 'handlebars'
-import { FinalizedTemplate, TemplatedPackageFile } from './types.js'
+import { FinalizedTemplate, TemplatedFile } from './types.js'
 
 const applyTemplates = (
-  templates: readonly TemplatedPackageFile[],
-  data: { packageName: string }
+  templates: readonly TemplatedFile[],
+  data: object & { packageName: string }
 ): readonly FinalizedTemplate[] => {
   const templateData = {
+    ...data,
     packageName: data.packageName,
     packageNameTitleCase: startCase(data.packageName).replaceAll(' ', ''),
   }

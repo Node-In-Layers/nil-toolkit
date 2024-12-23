@@ -1,9 +1,7 @@
 type PackageServices = Readonly<{
   createPackageDirectory: (packageName: string) => void
-  readGeneralTemplates: () => Promise<readonly TemplatedPackageFile[]>
-  readTemplates: (
-    packageType: PackageType
-  ) => Promise<readonly TemplatedPackageFile[]>
+  readGeneralTemplates: () => Promise<readonly TemplatedFile[]>
+  readTemplates: (packageType: PackageType) => Promise<readonly TemplatedFile[]>
   writeTemplates: (
     packageName: string,
     templates: readonly Required<FinalizedTemplate>[]
@@ -15,7 +13,7 @@ type PackageServicesLayer = Readonly<{
   'nil-toolkit/package': PackageServices
 }>
 
-type TemplatedPackageFile = {
+type TemplatedFile = {
   relativePath: string
   sourceData: string
 }
@@ -49,7 +47,7 @@ export {
   PackageServices,
   PackageServicesLayer,
   PackageType,
-  TemplatedPackageFile,
+  TemplatedFile,
   FinalizedTemplate,
   PackageFeatures,
   PackageFeaturesLayer,

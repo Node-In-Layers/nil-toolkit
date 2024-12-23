@@ -21,6 +21,11 @@ const _parseArguments = () => {
   const newApp = subParsers.add_parser('create-app', {
     help: 'Create a new app in an existing system.',
   })
+
+  newApp.add_argument('appName', {
+    help: 'The name of the app',
+  })
+
   const packageParser = subParsers.add_parser('create-package', {
     help: 'Create a new package.',
   })

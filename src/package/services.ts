@@ -4,11 +4,7 @@ import path from 'node:path'
 import exec from 'node:child_process'
 import * as glob from 'glob'
 import { ServicesDependencies } from '@node-in-layers/core'
-import {
-  FinalizedTemplate,
-  PackageServices,
-  TemplatedPackageFile,
-} from './types.js'
+import { FinalizedTemplate, PackageServices, TemplatedFile } from './types.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -27,7 +23,7 @@ const create = (dependencies: ServicesDependencies): PackageServices => {
 
   const _readAllTemplateFiles = async (
     subDirectory: string
-  ): Promise<readonly TemplatedPackageFile[]> => {
+  ): Promise<readonly TemplatedFile[]> => {
     const templatePath = path.join(
       __dirname,
       `../templates/package/${subDirectory}/**/*`

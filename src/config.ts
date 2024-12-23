@@ -6,9 +6,11 @@ const create = async (options: {
 }): Promise<Config> => {
   return {
     environment: 'prod',
-    core: {
+    'nil-core/core': {
       apps: [
         await import('./package/index.js'),
+        await import('./app/index.js'),
+        await import('./system/index.js'),
         await import('./toolkit/index.js'),
       ],
       layerOrder: ['services', 'features'],

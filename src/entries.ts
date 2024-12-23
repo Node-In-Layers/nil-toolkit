@@ -14,7 +14,7 @@ const loadSystem = async (args: {
   })
   const features = core.features.create({
     services: {
-      core: coreServices,
+      ['nil-core/core']: coreServices,
     },
   })
   return features.loadSystem(await createConfig(args))
