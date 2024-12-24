@@ -5,7 +5,7 @@ import { applyTemplates, createValidPackageName } from './libs.js'
 const create = (
   dependencies: SimpleFeaturesDependencies<PackageServicesLayer>
 ) => {
-  const ourServices = dependencies.services['nil-toolkit/package']
+  const ourServices = dependencies.services['@nil/toolkit.package']
   const createPackage = async ({
     packageName,
     packageType,

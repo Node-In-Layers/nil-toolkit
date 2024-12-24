@@ -17,7 +17,7 @@ type AppServices = Readonly<{
 }>
 
 type AppServicesLayer = Readonly<{
-  'nil-toolkit/app': AppServices
+  '@nil/toolkit.app': AppServices
 }>
 
 type AppFeatures = Readonly<{
@@ -25,7 +25,7 @@ type AppFeatures = Readonly<{
 }>
 
 type AppFeaturesLayer = Readonly<{
-  'nil-toolkit/app': AppFeatures
+  '@nil/toolkit.app': AppFeatures
 }>
 
 export { AppServices, AppServicesLayer, AppFeatures, AppFeaturesLayer }

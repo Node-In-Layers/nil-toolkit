@@ -10,7 +10,7 @@ type PackageServices = Readonly<{
 }>
 
 type PackageServicesLayer = Readonly<{
-  'nil-toolkit/package': PackageServices
+  '@nil/toolkit.package': PackageServices
 }>
 
 type TemplatedFile = {
@@ -40,7 +40,7 @@ type PackageFeatures = Readonly<{
 }>
 
 type PackageFeaturesLayer = Readonly<{
-  'nil-toolkit/package': PackageFeatures
+  '@nil/toolkit.package': PackageFeatures
 }>
 
 export {
