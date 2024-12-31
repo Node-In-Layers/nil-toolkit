@@ -11,10 +11,10 @@ const create = (
   >
 ) => {
   const createPackage = promiseWrap(
-    dependencies.features['nil-toolkit/package'].createPackage
+    dependencies.features['@nil/toolkit.package'].createPackage
   )
   const createApp = promiseWrap(
-    dependencies.features['nil-toolkit/app'].createApp
+    dependencies.features['@nil/toolkit.app'].createApp
   )
 
   return {

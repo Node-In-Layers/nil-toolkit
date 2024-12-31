@@ -6,7 +6,7 @@ const create = async (options: {
 }): Promise<Config> => {
   return {
     environment: 'prod',
-    'nil-core/core': {
+    '@nil/core': {
       apps: [
         await import('./package/index.js'),
         await import('./app/index.js'),
