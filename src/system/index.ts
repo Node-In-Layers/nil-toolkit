@@ -1,3 +1,5 @@
+import { Namespace } from '../types.js'
+
 const services = {
   create: () => {
     return {}
@@ -10,5 +12,5 @@ const features = {
   },
 }
 
-const name = 'nil-toolkit/system'
+const name = Namespace.system
 export { services, features, name }

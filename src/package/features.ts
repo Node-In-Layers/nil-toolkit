@@ -1,11 +1,12 @@
-import { SimpleFeaturesDependencies } from '@node-in-layers/core/index.js'
+import { FeaturesDependencies, Config } from '@node-in-layers/core/index.js'
+import { Namespace } from '../types.js'
 import { PackageServicesLayer, PackageType } from './types.js'
 import { applyTemplates, createValidPackageName } from './libs.js'
 
 const create = (
-  dependencies: SimpleFeaturesDependencies<PackageServicesLayer>
+  dependencies: FeaturesDependencies<Config, PackageServicesLayer>
 ) => {
-  const ourServices = dependencies.services['nil-toolkit/package']
+  const ourServices = dependencies.services[Namespace.package]
   const createPackage = async ({
     packageName,
     packageType,
