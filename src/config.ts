@@ -13,6 +13,7 @@ const create = async (options: {
     environment: 'prod',
     [CoreNamespace.root]: {
       apps: [
+        await import('./templating/index.js'),
         await import('./package/index.js'),
         await import('./app/index.js'),
         await import('./system/index.js'),

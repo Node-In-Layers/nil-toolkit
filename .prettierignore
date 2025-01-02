@@ -1,4 +1,4 @@
-src/templates
+src/templating/templates
 node_modules/
 dist/
 *.html

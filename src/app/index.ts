@@ -2,20 +2,21 @@ import { fileURLToPath } from 'node:url'
 import path, { dirname } from 'node:path'
 import * as glob from 'glob'
 import {
-  FeaturesDependencies,
+  FeaturesContext,
   Config,
-  ServicesDependencies,
+  ServicesContext,
 } from '@node-in-layers/core/index.js'
 import { PackageServicesLayer, PackageType } from '../package/types.js'
 import { Namespace } from '../types.js'
+import { applyTemplates, createValidName } from '../templating/libs.js'
+import { TemplatingServicesLayer } from '../templating/types.js'
 import { AppServicesLayer, AppServices } from './types.js'
-import { applyTemplates, createValidAppName } from './libs.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const services = {
-  create: (deps: ServicesDependencies): AppServices => {
+  create: (deps: ServicesContext): AppServices => {
     const _getPackageJson = async (): Promise<string | undefined> => {
       const wd = `${deps.constants.workingDirectory}/package.json`
       return (await glob.glob(wd)).find(
@@ -49,59 +50,29 @@ const services = {
         return PackageType.typescript
       })
 
-    const readTemplates = async ({ packageType }) => {
-      const templatePath = path.join(
-        __dirname,
-        `../templates/app/${packageType}/src/**/*`
-      )
-      const paths = (await glob.glob(templatePath, { dot: true })).filter(p =>
-        deps.node.fs.lstatSync(p).isFile()
-      )
-      return paths.map(sourceLocation => {
-        const dirA = path.join(__dirname, `../templates/app/${packageType}`)
-        const relativePath = path.relative(dirA, sourceLocation)
-        const sourceData = deps.node.fs.readFileSync(sourceLocation, 'utf-8')
-        return {
-          relativePath,
-          sourceData,
-        }
-      })
-    }
-
-    const writeTemplates = (appName, templates) => {
-      templates.forEach(t => {
-        const finalLocation = path
-          .join(deps.constants.workingDirectory, t.relativePath)
-          .replaceAll('.handlebars', '')
-          .replaceAll('APP_NAME', appName)
-        const dirPath = path.dirname(finalLocation)
-        deps.node.fs.mkdirSync(dirPath, { recursive: true })
-        deps.node.fs.writeFileSync(finalLocation, t.templatedData)
-      })
-    }
-
     return {
       isPackageRoot,
       doesAppAlreadyExist,
       getPackageName,
       getPackageType,
-      readTemplates,
-      writeTemplates,
     }
   },
 }
 
 const features = {
   create: (
-    deps: FeaturesDependencies<Config, PackageServicesLayer & AppServicesLayer>
+    context: FeaturesContext<
+      Config,
+      PackageServicesLayer & AppServicesLayer & TemplatingServicesLayer
+    >
   ) => {
     const createApp = async ({ appName }: { appName: string }) => {
-      const ourServices = deps.services[Namespace.app]
-      const logger = deps.log.getLogger('nil-toolkit:createApp')
+      const ourServices = context.services[Namespace.app]
+      const logger = context.log.getLogger('nil-toolkit:createApp')
 
-      appName = createValidAppName(appName)
+      appName = createValidName(appName)
 
-      if (!deps.services[Namespace.app].isPackageRoot()) {
+      if (!context.services[Namespace.app].isPackageRoot()) {
         throw new Error(
           `Must be located in the main directory of your node-in-layers system or package. This is the same directory as the package.json.`
         )
@@ -119,14 +90,25 @@ const features = {
       const packageType = await ourServices.getPackageType()
       logger.info(`Package Type if ${packageType}`)
       logger.info('Reading Templates')
-      const templates = await ourServices.readTemplates({ packageType })
+      const templates = await context.services[
+        Namespace.templating
+      ].readTemplates('app', packageType)
       logger.info('Apply Templates')
-      const appliedTemplates = applyTemplates(templates, {
+      const data = {
+        nodeInLayersCoreVersion:
+          await context.services[
+            Namespace.templating
+          ].getNodeInLayersCoreVersion(),
         packageName,
         appName,
-      })
+      }
+      const appliedTemplates = applyTemplates(templates, data)
       logger.info('Writing templates')
-      ourServices.writeTemplates(appName, appliedTemplates)
+      context.services[Namespace.templating].writeTemplates(
+        appName,
+        appliedTemplates,
+        { ignoreNameInDir: true }
+      )
       logger.info('Operation complete')
     }
     return {
