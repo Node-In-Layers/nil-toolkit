@@ -15,6 +15,7 @@
     "eslint": "eslint .",
     "feature-tests": "./node_modules/.bin/cucumber-js -p default",
     "prettier": "prettier --write .",
+    "prettier:check": "prettier -c .",
     "test": "export TS_NODE_PROJECT='./tsconfig.test.json' && mocha -r tsx ./test/src/*.test.ts ./test/src/**/*.test.ts ./test/src/**/**/*.test.ts",
     "test:coverage": "nyc --all --reporter cobertura --reporter text --reporter lcov --reporter html npm run test"
   },
