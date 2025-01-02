@@ -1,3 +1,5 @@
+import { Namespace } from '../types.js'
+
 type PackageServices = Readonly<{
   createPackageDirectory: (packageName: string) => void
   readGeneralTemplates: () => Promise<readonly TemplatedFile[]>
@@ -10,7 +12,7 @@ type PackageServices = Readonly<{
 }>
 
 type PackageServicesLayer = Readonly<{
-  'nil-toolkit/package': PackageServices
+  [Namespace.package]: PackageServices
 }>
 
 type TemplatedFile = {
@@ -40,7 +42,7 @@ type PackageFeatures = Readonly<{
 }>
 
 type PackageFeaturesLayer = Readonly<{
-  'nil-toolkit/package': PackageFeatures
+  [Namespace.package]: PackageFeatures
 }>
 
 export {

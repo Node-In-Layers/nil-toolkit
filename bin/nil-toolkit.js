@@ -3,6 +3,7 @@ import { ArgumentParser } from 'argparse'
 import { loadSystem } from '../dist/entries.js'
 import camelCase from 'lodash/camelCase.js'
 import esMain from 'es-main'
+import { Namespace } from '../dist/types.js'
 
 const _parseArguments = () => {
   const parser = new ArgumentParser({
@@ -55,7 +56,7 @@ const main = async () => {
 
   const system = await loadSystem(args)
   const command = camelCase(args.command)
-  await system.features['nil-toolkit/toolkit'][command](args).catch(e => {
+  await system.features[Namespace.toolkit][command](args).catch(e => {
     console.error(e.message)
     console.error(e)
   })

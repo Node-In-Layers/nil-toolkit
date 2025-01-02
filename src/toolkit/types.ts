@@ -1,7 +1,9 @@
+import { Namespace } from '../types.js'
+
 type ToolkitServices = Readonly<object>
 
 type ToolkitServicesLayer = {
-  'nil-toolkit/toolkit': ToolkitServices
+  [Namespace.toolkit]: ToolkitServices
 }
 
 enum Command {

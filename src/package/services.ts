@@ -3,7 +3,7 @@ import { dirname } from 'path'
 import path from 'node:path'
 import exec from 'node:child_process'
 import * as glob from 'glob'
-import { ServicesDependencies } from '@node-in-layers/core'
+import { ServicesDependencies } from '@node-in-layers/core/index.js'
 import { FinalizedTemplate, PackageServices, TemplatedFile } from './types.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -15,10 +15,10 @@ const create = (dependencies: ServicesDependencies): PackageServices => {
       dependencies.constants.workingDirectory,
       packageName
     )
-    if (dependencies.fs.existsSync(fullPath)) {
+    if (dependencies.node.fs.existsSync(fullPath)) {
       throw new Error(`${fullPath} already exists. Must be a new directory.`)
     }
-    dependencies.fs.mkdirSync(fullPath)
+    dependencies.node.fs.mkdirSync(fullPath)
   }
 
   const _readAllTemplateFiles = async (
@@ -29,12 +29,15 @@ const create = (dependencies: ServicesDependencies): PackageServices => {
       `../templates/package/${subDirectory}/**/*`
     )
     const paths = (await glob.glob(templatePath, { dot: true })).filter(p =>
-      dependencies.fs.lstatSync(p).isFile()
+      dependencies.node.fs.lstatSync(p).isFile()
     )
     return paths.map(sourceLocation => {
       const dirA = path.join(__dirname, `../templates/package/${subDirectory}`)
       const relativePath = path.relative(dirA, sourceLocation)
-      const sourceData = dependencies.fs.readFileSync(sourceLocation, 'utf-8')
+      const sourceData = dependencies.node.fs.readFileSync(
+        sourceLocation,
+        'utf-8'
+      )
       return {
         relativePath,
         sourceData,
@@ -62,8 +65,8 @@ const create = (dependencies: ServicesDependencies): PackageServices => {
         .replaceAll('.handlebars', '')
         .replaceAll('PACKAGE_NAME', packageName)
       const dirPath = path.dirname(finalLocation)
-      dependencies.fs.mkdirSync(dirPath, { recursive: true })
-      dependencies.fs.writeFileSync(finalLocation, t.templatedData)
+      dependencies.node.fs.mkdirSync(dirPath, { recursive: true })
+      dependencies.node.fs.writeFileSync(finalLocation, t.templatedData)
     })
   }
 

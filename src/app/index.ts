@@ -1,8 +1,13 @@
 import { fileURLToPath } from 'node:url'
 import path, { dirname } from 'node:path'
 import * as glob from 'glob'
-import { SimpleFeaturesDependencies } from '@node-in-layers/core/index.js'
+import {
+  FeaturesDependencies,
+  Config,
+  ServicesDependencies,
+} from '@node-in-layers/core/index.js'
 import { PackageServicesLayer, PackageType } from '../package/types.js'
+import { Namespace } from '../types.js'
 import { AppServicesLayer, AppServices } from './types.js'
 import { applyTemplates, createValidAppName } from './libs.js'
 
@@ -10,11 +15,11 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const services = {
-  create: (deps): AppServices => {
+  create: (deps: ServicesDependencies): AppServices => {
     const _getPackageJson = async (): Promise<string | undefined> => {
       const wd = `${deps.constants.workingDirectory}/package.json`
       return (await glob.glob(wd)).find(
-        p => deps.fs.lstatSync(p).isFile() && p.endsWith('package.json')
+        p => deps.node.fs.lstatSync(p).isFile() && p.endsWith('package.json')
       )
     }
 
@@ -25,7 +30,7 @@ const services = {
 
     const doesAppAlreadyExist = appName => {
       const dirPath = path.join(__dirname, appName)
-      return deps.fs.existsSync(dirPath)
+      return deps.node.fs.existsSync(dirPath)
     }
 
     const getPackageName = async () => {
@@ -33,7 +38,7 @@ const services = {
       if (!packagePath) {
         throw new Error(`package.json could not be found`)
       }
-      const data = deps.fs.readFileSync(packagePath, 'utf-8')
+      const data = deps.node.fs.readFileSync(packagePath, 'utf-8')
       const asJson = JSON.parse(data)
       return asJson.name
     }
@@ -50,12 +55,12 @@ const services = {
         `../templates/app/${packageType}/src/**/*`
       )
       const paths = (await glob.glob(templatePath, { dot: true })).filter(p =>
-        deps.fs.lstatSync(p).isFile()
+        deps.node.fs.lstatSync(p).isFile()
       )
       return paths.map(sourceLocation => {
         const dirA = path.join(__dirname, `../templates/app/${packageType}`)
         const relativePath = path.relative(dirA, sourceLocation)
-        const sourceData = deps.fs.readFileSync(sourceLocation, 'utf-8')
+        const sourceData = deps.node.fs.readFileSync(sourceLocation, 'utf-8')
         return {
           relativePath,
           sourceData,
@@ -70,8 +75,8 @@ const services = {
           .replaceAll('.handlebars', '')
           .replaceAll('APP_NAME', appName)
         const dirPath = path.dirname(finalLocation)
-        deps.fs.mkdirSync(dirPath, { recursive: true })
-        deps.fs.writeFileSync(finalLocation, t.templatedData)
+        deps.node.fs.mkdirSync(dirPath, { recursive: true })
+        deps.node.fs.writeFileSync(finalLocation, t.templatedData)
       })
     }
 
@@ -88,15 +93,15 @@ const services = {
 
 const features = {
   create: (
-    deps: SimpleFeaturesDependencies<PackageServicesLayer & AppServicesLayer>
+    deps: FeaturesDependencies<Config, PackageServicesLayer & AppServicesLayer>
   ) => {
     const createApp = async ({ appName }: { appName: string }) => {
-      const ourServices = deps.services['nil-toolkit/app']
+      const ourServices = deps.services[Namespace.app]
       const logger = deps.log.getLogger('nil-toolkit:createApp')
 
       appName = createValidAppName(appName)
 
-      if (!deps.services['nil-toolkit/app'].isPackageRoot()) {
+      if (!deps.services[Namespace.app].isPackageRoot()) {
         throw new Error(
           `Must be located in the main directory of your node-in-layers system or package. This is the same directory as the package.json.`
         )
@@ -130,5 +135,5 @@ const features = {
   },
 }
 
-const name = 'nil-toolkit/app'
+const name = Namespace.app
 export { services, features, name }

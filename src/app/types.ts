@@ -3,6 +3,7 @@ import {
   TemplatedFile,
   FinalizedTemplate,
 } from '../package/types.js'
+import { Namespace } from '../types.js'
 
 type AppServices = Readonly<{
   isPackageRoot: () => Promise<boolean>
@@ -17,7 +18,7 @@ type AppServices = Readonly<{
 }>
 
 type AppServicesLayer = Readonly<{
-  'nil-toolkit/app': AppServices
+  [Namespace.app]: AppServices
 }>
 
 type AppFeatures = Readonly<{
@@ -25,7 +26,7 @@ type AppFeatures = Readonly<{
 }>
 
 type AppFeaturesLayer = Readonly<{
-  'nil-toolkit/app': AppFeatures
+  [Namespace.app]: AppFeatures
 }>
 
 export { AppServices, AppServicesLayer, AppFeatures, AppFeaturesLayer }

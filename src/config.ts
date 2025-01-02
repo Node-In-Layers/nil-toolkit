@@ -1,4 +1,9 @@
-import { Config, LogFormat, LogLevelNames } from '@node-in-layers/core'
+import {
+  Config,
+  LogFormat,
+  LogLevelNames,
+  CoreNamespace,
+} from '@node-in-layers/core/index.js'
 
 const create = async (options: {
   logFormat?: LogFormat
@@ -6,7 +11,7 @@ const create = async (options: {
 }): Promise<Config> => {
   return {
     environment: 'prod',
-    'nil-core/core': {
+    [CoreNamespace.root]: {
       apps: [
         await import('./package/index.js'),
         await import('./app/index.js'),
