@@ -1,8 +1,4 @@
-import {
-  PackageType,
-  TemplatedFile,
-  FinalizedTemplate,
-} from '../package/types.js'
+import { PackageType } from '../templating/types.js'
 import { Namespace } from '../types.js'
 
 type AppServices = Readonly<{
@@ -10,11 +6,6 @@ type AppServices = Readonly<{
   doesAppAlreadyExist: (appName: string) => boolean
   getPackageName: () => Promise<string>
   getPackageType: () => Promise<PackageType>
-  readTemplates: ({ packageType }) => Promise<readonly TemplatedFile[]>
-  writeTemplates: (
-    appName: string,
-    templates: readonly FinalizedTemplate[]
-  ) => void
 }>
 
 type AppServicesLayer = Readonly<{

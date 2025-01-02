@@ -5,7 +5,6 @@ import { ArgumentParser } from 'argparse'
 import repl from 'repl'
 import chalk from 'chalk'
 import merge from 'lodash/merge.js'
-import fs from 'fs'
 import * as core from '@node-in-layers/core'
 
 const _parseArguments = () => {
@@ -20,17 +19,9 @@ const _parseArguments = () => {
 }
 
 const _systemStartup = async (environment) => {
-  const workingDirectory = process.cwd()
-  const coreServices = core.services.create({
+  return core.loadSystem({
     environment,
-    workingDirectory,
-    fs,
   })
-  return core.features.create({
-    services: {
-      core: coreServices
-    }
-  }).loadSystem()
 }
 
 

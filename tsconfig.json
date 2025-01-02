@@ -19,6 +19,7 @@
   "exclude": [
     "src/index.d.ts",
     "src/templates",
+    "src/templating/templates",
     "node_modules",
     "dist",
     "features",

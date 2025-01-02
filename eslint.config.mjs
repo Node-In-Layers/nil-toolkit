@@ -22,7 +22,7 @@ export default [
   {
     ignores: [
       'coverage/',
-      'src/templates',
+      'src/templating/templates',
       'dist/',
       'eslint.config.mjs',
       'node_modules/',

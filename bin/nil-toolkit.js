@@ -39,6 +39,12 @@ const _parseArguments = () => {
   const addSystemParser = subParsers.add_parser('create-system', {
     help: 'Create a new Node In Layers system.',
   })
+  addSystemParser.add_argument('systemName', {
+    help: 'The name for the system.',
+  })
+  addSystemParser.add_argument('systemType', {
+    help: 'typescript, esm, commonjs',
+  })
 
   const args = parser.parse_args()
   if (!args.command) {
