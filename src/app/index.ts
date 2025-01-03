@@ -95,10 +95,9 @@ const features = {
       ].readTemplates('app', packageType)
       logger.info('Apply Templates')
       const data = {
-        nodeInLayersCoreVersion:
-          await context.services[
-            Namespace.templating
-          ].getNodeInLayersCoreVersion(),
+        nodeInLayersCoreVersion: await context.services[
+          Namespace.templating
+        ].getDependencyVersion('@node-in-layers/core'),
         packageName,
         appName,
       }

@@ -2,11 +2,11 @@ import { CoreNamespace } from '@node-in-layers/core/index.js'
 
 const core = {
   apps: await Promise.all([
+    import((`@node-in-layers/db/index.js`)),
     import((`./dist/{{systemName}}/index.js`)),
   ]),
   layerOrder: [
     'services',
-    'events',
     'features',
   ],
   logLevel: 'debug',

@@ -27,7 +27,7 @@ type TemplatingServices = Readonly<{
     templates: readonly Required<FinalizedTemplate>[],
     options?: { ignoreNameInDir?: boolean }
   ) => void
-  getNodeInLayersCoreVersion: () => Promise<string>
+  getDependencyVersion: (key: string) => Promise<string>
 }>
 
 type TemplatingServicesLayer = Readonly<{

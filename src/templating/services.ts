@@ -11,13 +11,14 @@ const __dirname = dirname(__filename)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const create = (context: ServicesContext): TemplatingServices => {
   const _getToolkitPackageJsonPath = async (): Promise<string | undefined> => {
-    const wd = path.join(__dirname, '../../package.json')
-    return (await glob.glob(wd)).find(
+    // Depending on if this is in a src or dist folder, this location will change.
+    const wd = path.join(__dirname, '../**/package.json')
+    return (await glob.glob(wd, { ignore: '../node_modules/**' })).find(
       p => context.node.fs.lstatSync(p).isFile() && p.endsWith('package.json')
     )
   }
 
-  const getNodeInLayersCoreVersion = async () => {
+  const getDependencyVersion = async (key: string) => {
     const packageJsonPath = await _getToolkitPackageJsonPath()
     if (!packageJsonPath) {
       throw new Error(`Could not find nil-toolkit's package.json file.`)
@@ -25,7 +26,11 @@ const create = (context: ServicesContext): TemplatingServices => {
     const packageJson = JSON.parse(
       context.node.fs.readFileSync(packageJsonPath, 'utf-8')
     )
-    return packageJson.dependencies['@node-in-layers/core']
+    const value = packageJson.dependencies[key]
+    if (!value) {
+      throw new Error(`${key} does not exist inside package.json`)
+    }
+    return value
   }
 
   const createDirectory = (name: string, options?: { inSrc: boolean }) => {
@@ -89,7 +94,7 @@ const create = (context: ServicesContext): TemplatingServices => {
     createDirectory,
     readTemplates,
     writeTemplates,
-    getNodeInLayersCoreVersion,
+    getDependencyVersion,
   }
 }
 
