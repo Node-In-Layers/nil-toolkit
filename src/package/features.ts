@@ -36,10 +36,9 @@ const create = (
     const templates = generalTemplates.concat(specificTemplates)
     logger.info(`Apply templates`)
     const data = {
-      nodeInLayersCoreVersion:
-        await context.services[
-          Namespace.templating
-        ].getNodeInLayersCoreVersion(),
+      nodeInLayersCoreVersion: await context.services[
+        Namespace.templating
+      ].getDependencyVersion('@node-in-layers/core'),
       packageName,
     }
     const appliedTemplates = applyTemplates(templates, data)

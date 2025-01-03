@@ -1,6 +1,6 @@
 # Node In Layers Toolkit
 
-A bunch of tools for dealing with Node In Layer Systems
+The official tools for working with Node In Layers systems.
 
 # How To Install
 
@@ -10,9 +10,9 @@ A bunch of tools for dealing with Node In Layer Systems
 
 Run `nil-toolkit` from the command line. It has the following commands.
 
-- create-system - (soon) Creates a new Node In Layers System
-- create-package - (soon) Creates a new reusable Node In Layers package.
-- create-app - (soon) Creates a new app for an existing node in layers system/package.
+- create-system - Creates a new Node In Layers System, complete with a config file and an executable shell.
+- create-package - Creates a new reusable Node In Layers package.
+- create-app - Creates a new app for an existing node in layers system/package. Must be executed from within the system/package.
 
 ## Commands
 
@@ -22,7 +22,7 @@ This command creates a new Node In Layers system
 
 ### create-package
 
-This command creates a new Node In Layers reusable package. This is similar to a system except, that it doesn't include the ability to run. It is intended to be used in a system.
+This command creates a new Node In Layers reusable package. This is similar to a system except, that it doesn't include the ability to run. It is intended to be used by 1 or more systems.
 
 ### create-app
 
