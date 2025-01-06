@@ -24,14 +24,7 @@ const _systemStartup = async (environment) => {
   })
 }
 
-
-const main = async () => {
-  const args = _parseArguments()
-  const objects = await _systemStartup(args.environment)
-  merge(repl.start().context, objects)
-
-  console.info(chalk.blue.bold(`Welcome to the shell.`))
-  console.info(chalk.blue.bold(`--------------------------------`))
+const help = (objects) => () => {
   console.info(chalk.white.bold(`You have access to the following objects:`))
   console.info(
     chalk.white.bold(
@@ -39,6 +32,22 @@ const main = async () => {
       //`[ services, config, orm, ormQueryBuilder, models, datastoreProvider ]`
     )
   )
+  console.info()
+  console.info(
+    chalk.white.bold('You can also write "help()" to see this again.')
+  )
+}
+
+const main = async () => {
+  const args = _parseArguments()
+  const objects = await _systemStartup(args.environment)
+  const context = repl.start().context
+  merge(context, objects)
+  console.info(chalk.blue.bold(`Welcome to the shell.`))
+  console.info(chalk.blue.bold(`--------------------------------`))
+  const helpFunc = help(objects)
+  helpFunc()
+  context.help = helpFunc
 }
 
 if (esMain(import.meta)) {
