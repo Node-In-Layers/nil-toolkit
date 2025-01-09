@@ -1,8 +1,9 @@
 import { CoreNamespace } from '@node-in-layers/core/index.js'
+import { DataNamespace } from '@node-in-layers/data/index.js'
 
 const core = {
   apps: await Promise.all([
-    import((`@node-in-layers/db/index.js`)),
+    import((`@node-in-layers/data/index.js`)),
     import((`./dist/{{systemName}}/index.js`)),
   ]),
   layerOrder: [
@@ -13,6 +14,17 @@ const core = {
   logFormat: 'json',
 }
 
+const data = {
+  databases: {
+    default: {
+      datastoreType: 'memory'
+    }
+  }
+}
+
 export default () => ({
+  environment: 'dev',
+  systemName: '${systemName}',
   [CoreNamespace.root]: core,
+  [DataNamespace.root]: data,
 })

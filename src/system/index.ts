@@ -48,10 +48,9 @@ const features = {
       const templates = generalTemplates.concat(specificTemplates)
       logger.info(`Apply templates`)
       const data = {
-        nodeInLayersDbVersion:
-          await context.services[Namespace.templating].getDependencyVersion(
-            '@node-in-layers/db'
-          ),
+        nodeInLayersDbVersion: await context.services[
+          Namespace.templating
+        ].getDependencyVersion('@node-in-layers/data'),
         nodeInLayersCoreVersion: await context.services[
           Namespace.templating
         ].getDependencyVersion('@node-in-layers/core'),

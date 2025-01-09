@@ -11,6 +11,7 @@ const create = async (options: {
 }): Promise<Config> => {
   return {
     environment: 'prod',
+    systemName: 'nil-toolkit',
     [CoreNamespace.root]: {
       apps: [
         await import('./templating/index.js'),
