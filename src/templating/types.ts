@@ -13,14 +13,14 @@ type FinalizedTemplate = Readonly<{
 enum PackageType {
   typescript = 'typescript',
   esm = 'esm',
-  commonjs = 'commonjs',
 }
 
 type TemplatingServices = Readonly<{
   createDirectory: (name: string, options?: { inSrc: boolean }) => void
   readTemplates: (
     name: string,
-    packageType: PackageType | 'all'
+    packageType: PackageType | 'all',
+    nested?: string
   ) => Promise<readonly TemplatedFile[]>
   writeTemplates: (
     packageName: string,

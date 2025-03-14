@@ -39,7 +39,8 @@ const features = {
       logger.info('Overriding package data with system data')
       const specificTemplates = await templatingServices.readTemplates(
         'system',
-        systemLanguage
+        systemLanguage,
+        systemType
       )
       const generalTemplates = await templatingServices.readTemplates(
         'system',
@@ -64,8 +65,12 @@ const features = {
       if (systemLanguage === PackageType.typescript) {
         logger.info(`Running NPM Install`)
         packageServices.executeNpm(systemName, 'install')
-        logger.info(`Building system`)
-        packageServices.executeNpm(systemName, 'run build')
+        if (systemType === 'rest') {
+          logger.info(`Building system`)
+          packageServices.executeNpm(systemName, 'run build')
+        } else if (systemType === 'react') {
+          packageServices.executeBashCommand(systemName, 'rm -Rf ./dist')
+        }
       }
       logger.info(`Running NPM Prettier`)
       packageServices.executeNpm(systemName, 'run prettier')

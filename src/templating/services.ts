@@ -45,19 +45,24 @@ const create = (context: ServicesContext): TemplatingServices => {
 
   const _readAllTemplateFiles = async (
     subDirectory: string,
-    packageType: PackageType | 'all'
+    packageType: PackageType | 'all',
+    nested?: string
   ): Promise<readonly TemplatedFile[]> => {
-    const templatePath = path.join(
-      __dirname,
-      `./templates/${subDirectory}/${packageType}/**/*`
-    )
+    const templatePath = nested
+      ? path.join(
+          __dirname,
+          `./templates/${subDirectory}/${packageType}/${nested}/**/*`
+        )
+      : path.join(__dirname, `./templates/${subDirectory}/${packageType}/**/*`)
     const paths = (await glob.glob(templatePath, { dot: true })).filter(p =>
       fs.lstatSync(p).isFile()
     )
     return paths.map(sourceLocation => {
       const dirA = path.join(
         __dirname,
-        `./templates/${subDirectory}/${packageType}`
+        nested
+          ? `./templates/${subDirectory}/${packageType}/${nested}`
+          : `./templates/${subDirectory}/${packageType}`
       )
       const relativePath = path.relative(dirA, sourceLocation)
       const sourceData = fs.readFileSync(sourceLocation, 'utf-8')

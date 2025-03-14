@@ -13,8 +13,20 @@ const create = (): PackageServices => {
     })
   }
 
+  const executeBashCommand = (
+    packageName: string,
+    command: string,
+    args?: readonly string[]
+  ) => {
+    const cliArgs = args ? ` ${args.join(' ')}` : ''
+    exec.execSync(`cd ${packageName} && ${command}${cliArgs}`, {
+      stdio: 'inherit',
+    })
+  }
+
   return {
     executeNpm,
+    executeBashCommand,
   }
 }
 

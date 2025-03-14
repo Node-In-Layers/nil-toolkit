@@ -3,6 +3,11 @@ import { PackageType } from '../templating/types.js'
 
 type PackageServices = Readonly<{
   executeNpm: (packageName: string, command: string, args?: string[]) => void
+  executeBashCommand: (
+    packageName: string,
+    command: string,
+    args?: readonly string[]
+  ) => void
 }>
 
 type PackageServicesLayer = Readonly<{
