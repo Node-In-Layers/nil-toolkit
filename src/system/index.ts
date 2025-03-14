@@ -27,19 +27,19 @@ const features = {
       context.services['@node-in-layers/toolkit/templating']
     const packageServices = context.services['@node-in-layers/toolkit/package']
 
-    const createSystem = async ({ systemName, systemType }) => {
+    const createSystem = async ({ systemName, systemLanguage, systemType }) => {
       systemName = createValidName(systemName)
       const logger = context.log.getLogger('nil-toolkit:createSystem')
       logger.info('Creating package first')
       await context.features['@node-in-layers/toolkit/package'].createPackage({
         packageName: systemName,
-        packageType: systemType,
+        packageType: systemLanguage,
       })
       // Now we override the package with system related data.
       logger.info('Overriding package data with system data')
       const specificTemplates = await templatingServices.readTemplates(
         'system',
-        systemType
+        systemLanguage
       )
       const generalTemplates = await templatingServices.readTemplates(
         'system',
@@ -61,7 +61,7 @@ const features = {
       const appliedTemplates = applyTemplates(templates, data)
       logger.info(`Writing templates to ${context.constants.workingDirectory}`)
       templatingServices.writeTemplates(systemName, appliedTemplates)
-      if (systemType === PackageType.typescript) {
+      if (systemLanguage === PackageType.typescript) {
         logger.info(`Running NPM Install`)
         packageServices.executeNpm(systemName, 'install')
         logger.info(`Building system`)

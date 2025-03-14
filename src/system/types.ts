@@ -7,13 +7,20 @@ type SystemServicesLayer = Readonly<{
   [Namespace.system]: SystemServices
 }>
 
+enum SystemType {
+  rest = 'rest',
+  react = 'react',
+}
+
 type SystemFeatures = Readonly<{
   createSystem: ({
     systemName,
+    systemLanguage,
     systemType,
   }: {
     systemName: string
-    systemType: PackageType
+    systemLanguage: PackageType
+    systemType: SystemType
   }) => Promise<void>
 }>
 
@@ -26,4 +33,5 @@ export {
   SystemFeaturesLayer,
   SystemServices,
   SystemServicesLayer,
+  SystemType,
 }

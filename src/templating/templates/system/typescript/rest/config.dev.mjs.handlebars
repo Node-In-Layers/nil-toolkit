@@ -9,9 +9,14 @@ const core = {
   layerOrder: [
     'services',
     'features',
+    'entries',
   ],
-  logLevel: 'debug',
-  logFormat: 'json',
+  logging: {
+    logLevel: 'debug',
+    logFormat: 'json',
+  },
+  modelFactory: '@node-in-layers/data',
+  modelCruds: true,
 }
 
 const data = {
@@ -24,7 +29,7 @@ const data = {
 
 export default () => ({
   environment: 'dev',
-  systemName: '${systemName}',
+  systemName: '{{systemName}}',
   [CoreNamespace.root]: core,
   [DataNamespace.root]: data,
 })

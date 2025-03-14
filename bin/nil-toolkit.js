@@ -42,8 +42,11 @@ const _parseArguments = () => {
   addSystemParser.add_argument('systemName', {
     help: 'The name for the system.',
   })
-  addSystemParser.add_argument('systemType', {
+  addSystemParser.add_argument('systemLanguage', {
     help: 'typescript, esm, commonjs',
+  })
+  addSystemParser.add_argument('systemType', {
+    help: 'rest, react',
   })
 
   const args = parser.parse_args()
