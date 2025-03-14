@@ -21,8 +21,10 @@ const create = async (options: {
         await import('./toolkit/index.js'),
       ],
       layerOrder: ['services', 'features'],
-      logFormat: options.logFormat || LogFormat.simple,
-      logLevel: options.logLevel || LogLevelNames.info,
+      logging: {
+        logFormat: options.logFormat || LogFormat.simple,
+        logLevel: options.logLevel || LogLevelNames.info,
+      },
     },
   }
 }

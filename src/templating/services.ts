@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import { fileURLToPath } from 'url'
 import path, { dirname } from 'node:path'
 import * as glob from 'glob'
@@ -14,7 +15,7 @@ const create = (context: ServicesContext): TemplatingServices => {
     // Depending on if this is in a src or dist folder, this location will change.
     const wd = path.join(__dirname, '../**/package.json')
     return (await glob.glob(wd, { ignore: '../node_modules/**' })).find(
-      p => context.node.fs.lstatSync(p).isFile() && p.endsWith('package.json')
+      p => fs.lstatSync(p).isFile() && p.endsWith('package.json')
     )
   }
 
@@ -23,9 +24,7 @@ const create = (context: ServicesContext): TemplatingServices => {
     if (!packageJsonPath) {
       throw new Error(`Could not find nil-toolkit's package.json file.`)
     }
-    const packageJson = JSON.parse(
-      context.node.fs.readFileSync(packageJsonPath, 'utf-8')
-    )
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
     const value = packageJson.dependencies[key]
     if (!value) {
       throw new Error(`${key} does not exist inside package.json`)
@@ -38,10 +37,10 @@ const create = (context: ServicesContext): TemplatingServices => {
       ? [context.constants.workingDirectory, 'src', name]
       : [context.constants.workingDirectory, name]
     const fullPath = path.join(...parts)
-    if (context.node.fs.existsSync(fullPath)) {
+    if (fs.existsSync(fullPath)) {
       throw new Error(`${fullPath} already exists. Must be a new directory.`)
     }
-    context.node.fs.mkdirSync(fullPath)
+    fs.mkdirSync(fullPath)
   }
 
   const _readAllTemplateFiles = async (
@@ -53,7 +52,7 @@ const create = (context: ServicesContext): TemplatingServices => {
       `./templates/${subDirectory}/${packageType}/**/*`
     )
     const paths = (await glob.glob(templatePath, { dot: true })).filter(p =>
-      context.node.fs.lstatSync(p).isFile()
+      fs.lstatSync(p).isFile()
     )
     return paths.map(sourceLocation => {
       const dirA = path.join(
@@ -61,7 +60,7 @@ const create = (context: ServicesContext): TemplatingServices => {
         `./templates/${subDirectory}/${packageType}`
       )
       const relativePath = path.relative(dirA, sourceLocation)
-      const sourceData = context.node.fs.readFileSync(sourceLocation, 'utf-8')
+      const sourceData = fs.readFileSync(sourceLocation, 'utf-8')
       return {
         relativePath,
         sourceData,
@@ -85,8 +84,8 @@ const create = (context: ServicesContext): TemplatingServices => {
         .replaceAll('APP_NAME', name)
         .replaceAll('SYSTEM_NAME', name)
       const dirPath = path.dirname(finalLocation)
-      context.node.fs.mkdirSync(dirPath, { recursive: true })
-      context.node.fs.writeFileSync(finalLocation, t.templatedData)
+      fs.mkdirSync(dirPath, { recursive: true })
+      fs.writeFileSync(finalLocation, t.templatedData)
     })
   }
 

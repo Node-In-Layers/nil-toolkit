@@ -20,7 +20,7 @@ const create = (
     packageType: PackageType
   }) => {
     packageName = createValidName(packageName)
-    const logger = context.log.getLogger('nil-toolkit:createPackage')
+    const logger = context.log.getLogger(context, 'nil-toolkit:createPackage')
     logger.info('Creating package directory')
     templatingServices.createDirectory(packageName)
     logger.info('Reading templates for all package types')

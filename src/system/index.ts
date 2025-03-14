@@ -29,7 +29,7 @@ const features = {
 
     const createSystem = async ({ systemName, systemLanguage, systemType }) => {
       systemName = createValidName(systemName)
-      const logger = context.log.getLogger('nil-toolkit:createSystem')
+      const logger = context.log.getLogger(context, 'nil-toolkit:createSystem')
       logger.info('Creating package first')
       await context.features['@node-in-layers/toolkit/package'].createPackage({
         packageName: systemName,

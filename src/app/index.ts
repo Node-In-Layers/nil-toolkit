@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path, { dirname } from 'node:path'
 import * as glob from 'glob'
@@ -16,11 +17,11 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const services = {
-  create: (deps: ServicesContext): AppServices => {
+  create: (context: ServicesContext): AppServices => {
     const _getPackageJson = async (): Promise<string | undefined> => {
-      const wd = `${deps.constants.workingDirectory}/package.json`
+      const wd = `${context.constants.workingDirectory}/package.json`
       return (await glob.glob(wd)).find(
-        p => deps.node.fs.lstatSync(p).isFile() && p.endsWith('package.json')
+        p => fs.lstatSync(p).isFile() && p.endsWith('package.json')
       )
     }
 
@@ -31,7 +32,7 @@ const services = {
 
     const doesAppAlreadyExist = appName => {
       const dirPath = path.join(__dirname, appName)
-      return deps.node.fs.existsSync(dirPath)
+      return fs.existsSync(dirPath)
     }
 
     const getPackageName = async () => {
@@ -39,7 +40,7 @@ const services = {
       if (!packagePath) {
         throw new Error(`package.json could not be found`)
       }
-      const data = deps.node.fs.readFileSync(packagePath, 'utf-8')
+      const data = fs.readFileSync(packagePath, 'utf-8')
       const asJson = JSON.parse(data)
       return asJson.name
     }
@@ -68,7 +69,7 @@ const features = {
   ) => {
     const createApp = async ({ appName }: { appName: string }) => {
       const ourServices = context.services[Namespace.app]
-      const logger = context.log.getLogger('nil-toolkit:createApp')
+      const logger = context.log.getLogger(context, 'nil-toolkit:createApp')
 
       appName = createValidName(appName)
 
