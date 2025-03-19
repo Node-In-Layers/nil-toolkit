@@ -1,7 +1,7 @@
 {
   "name": "@node-in-layers/toolkit",
   "type": "module",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "The official toolkit for creating/updating/maintaining Node In Layer based systems.",
   "main": "index.js",
   "bin": {

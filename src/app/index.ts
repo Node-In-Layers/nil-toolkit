@@ -67,7 +67,13 @@ const features = {
       PackageServicesLayer & AppServicesLayer & TemplatingServicesLayer
     >
   ) => {
-    const createApp = async ({ appName }: { appName: string }) => {
+    const createApp = async ({
+      appName,
+      namespace,
+    }: {
+      appName: string
+      namespace?: string
+    }) => {
       const ourServices = context.services[Namespace.app]
       const logger = context.log.getLogger(context, 'nil-toolkit:createApp')
 
@@ -101,6 +107,7 @@ const features = {
         ].getDependencyVersion('@node-in-layers/core'),
         packageName,
         appName,
+        namespace: namespace || appName,
       }
       const appliedTemplates = applyTemplates(templates, data)
       logger.info('Writing templates')

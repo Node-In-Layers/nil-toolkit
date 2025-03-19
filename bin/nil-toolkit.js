@@ -26,6 +26,9 @@ const _parseArguments = () => {
   newApp.add_argument('appName', {
     help: 'The name of the app',
   })
+  newApp.add_argument('-n', '--namespace', {
+    help: 'The namespace for the app. Defaults to the appName.',
+  })
 
   const packageParser = subParsers.add_parser('create-package', {
     help: 'Create a new package.',
