@@ -27,16 +27,14 @@ const features = {
       context.services['@node-in-layers/toolkit/templating']
     const packageServices = context.services['@node-in-layers/toolkit/package']
 
-    const createSystem = async ({ systemName, systemLanguage, systemType }) => {
+    const createSystem = context.log.logWrapAsync('createSystem', async (log, { systemName, systemLanguage, systemType }) => {
       systemName = createValidName(systemName)
-      const logger = context.log.getLogger(context, 'nil-toolkit:createSystem')
-      logger.info('Creating package first')
       await context.features['@node-in-layers/toolkit/package'].createPackage({
         packageName: systemName,
         packageType: systemLanguage,
       })
       // Now we override the package with system related data.
-      logger.info('Overriding package data with system data')
+      log.info('Overriding package data with system data')
       const specificTemplates = await templatingServices.readTemplates(
         'system',
         systemLanguage,
@@ -47,7 +45,7 @@ const features = {
         'all'
       )
       const templates = generalTemplates.concat(specificTemplates)
-      logger.info(`Apply templates`)
+      log.info(`Apply templates`)
       const data = {
         nodeInLayersDbVersion: await context.services[
           Namespace.templating
@@ -60,25 +58,25 @@ const features = {
         packageName: systemName,
       }
       const appliedTemplates = applyTemplates(templates, data)
-      logger.info(`Writing templates to ${context.constants.workingDirectory}`)
+      log.info(`Writing templates to ${context.constants.workingDirectory}`)
       templatingServices.writeTemplates(systemName, appliedTemplates)
       if (systemLanguage === PackageType.typescript) {
-        logger.info(`Running NPM Install`)
+        log.info(`Running NPM Install`)
         packageServices.executeNpm(systemName, 'install')
         if (systemType === 'rest') {
-          logger.info(`Building system`)
+          log.info(`Building system`)
           packageServices.executeNpm(systemName, 'run build')
         } else if (systemType === 'react') {
           packageServices.executeBashCommand(systemName, 'rm -Rf ./dist')
         }
       }
-      logger.info(`Running NPM Prettier`)
+      log.info(`Running NPM Prettier`)
       packageServices.executeNpm(systemName, 'run prettier')
-      logger.info(`Running NPM Eslint`)
+      log.info(`Running NPM Eslint`)
       packageServices.executeNpm(systemName, 'run eslint')
-      logger.info(`New package complete`)
+      log.info(`New package complete`)
       return
-    }
+    })
 
     return {
       createSystem,

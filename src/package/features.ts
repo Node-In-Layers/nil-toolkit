@@ -12,7 +12,7 @@ const create = (
 ) => {
   const ourServices = context.services[Namespace.package]
   const templatingServices = context.services[Namespace.templating]
-  const createPackage = async ({
+  const createPackage = context.log.logWrapAsync('createPackage', async (logger, {
     packageName,
     packageType,
   }: {
@@ -20,7 +20,6 @@ const create = (
     packageType: PackageType
   }) => {
     packageName = createValidName(packageName)
-    const logger = context.log.getLogger(context, 'nil-toolkit:createPackage')
     logger.info('Creating package directory')
     templatingServices.createDirectory(packageName)
     logger.info('Reading templates for all package types')
@@ -55,7 +54,7 @@ const create = (
     logger.info(`Running NPM Eslint`)
     ourServices.executeNpm(packageName, 'run eslint')
     logger.info(`New package complete`)
-  }
+  })
 
   return {
     createPackage,

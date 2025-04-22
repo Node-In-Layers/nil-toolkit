@@ -67,7 +67,7 @@ const features = {
       PackageServicesLayer & AppServicesLayer & TemplatingServicesLayer
     >
   ) => {
-    const createApp = async ({
+    const createApp = context.log.logWrapAsync('createApp', async (logger,{
       appName,
       namespace,
     }: {
@@ -75,7 +75,6 @@ const features = {
       namespace?: string
     }) => {
       const ourServices = context.services[Namespace.app]
-      const logger = context.log.getLogger(context, 'nil-toolkit:createApp')
 
       appName = createValidName(appName)
 
@@ -117,7 +116,7 @@ const features = {
         { ignoreNameInDir: true }
       )
       logger.info('Operation complete')
-    }
+    })
     return {
       createApp,
     }
