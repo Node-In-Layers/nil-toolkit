@@ -1,10 +1,14 @@
-import { FeaturesContext, Config } from '@node-in-layers/core/index.js'
+import {
+  FeaturesContext,
+  Config,
+  CrossLayerProps,
+} from '@node-in-layers/core/index.js'
 import { Namespace } from '../types.js'
 import { applyTemplates, createValidName } from '../templating/libs.js'
-import { TemplatingServicesLayer } from '../templating/types.js'
-import { PackageServicesLayer, PackageType } from './types.js'
+import { TemplatingServicesLayer, PackageType } from '../templating/types.js'
+import { PackageServicesLayer } from './types.js'
 
-const create = (
+export const create = (
   context: FeaturesContext<
     Config,
     PackageServicesLayer & TemplatingServicesLayer
@@ -12,54 +16,83 @@ const create = (
 ) => {
   const ourServices = context.services[Namespace.package]
   const templatingServices = context.services[Namespace.templating]
-  const createPackage = async ({
-    packageName,
-    packageType,
-  }: {
-    packageName: string
-    packageType: PackageType
-  }) => {
-    packageName = createValidName(packageName)
-    const logger = context.log.getLogger('nil-toolkit:createPackage')
-    logger.info('Creating package directory')
-    templatingServices.createDirectory(packageName)
-    logger.info('Reading templates for all package types')
+
+  const createPackage = async (
+    props: {
+      packageName: string
+      packageType: PackageType
+    },
+    crossLayerProps?: CrossLayerProps
+  ) => {
+    const log = context.log.getInnerLogger('createPackage', crossLayerProps)
+    const packageName = createValidName(props.packageName)
+    log.info('Creating package directory')
+    templatingServices.createDirectory({ name: packageName }, crossLayerProps)
+    log.info('Reading templates for all package types')
     const generalTemplates = await templatingServices.readTemplates(
-      'package',
-      'all'
+      {
+        name: 'package',
+        packageType: 'all',
+      },
+      crossLayerProps
     )
-    logger.info(`Reading templates for ${packageType} package types`)
+    log.info(`Reading templates for ${props.packageType} package types`)
     const specificTemplates = await templatingServices.readTemplates(
-      'package',
-      packageType
+      {
+        name: 'package',
+        packageType: props.packageType,
+      },
+      crossLayerProps
     )
     const templates = generalTemplates.concat(specificTemplates)
-    logger.info(`Apply templates`)
+    log.info(`Apply templates`)
     const data = {
       nodeInLayersCoreVersion: await context.services[
         Namespace.templating
-      ].getDependencyVersion('@node-in-layers/core'),
+      ].getDependencyVersion({ key: '@node-in-layers/core' }, crossLayerProps),
       packageName,
     }
     const appliedTemplates = applyTemplates(templates, data)
-    logger.info(`Writing templates to ${context.constants.workingDirectory}`)
-    templatingServices.writeTemplates(packageName, appliedTemplates)
-    if (packageType === PackageType.typescript) {
-      logger.info(`Running NPM Install`)
-      ourServices.executeNpm(packageName, 'install')
-      logger.info(`Building package`)
-      ourServices.executeNpm(packageName, 'run build')
+    log.info(`Writing templates to ${context.constants.workingDirectory}`)
+    templatingServices.writeTemplates(
+      {
+        packageName,
+        templates: appliedTemplates,
+      },
+      crossLayerProps
+    )
+    if (props.packageType === PackageType.typescript) {
+      log.info(`Running NPM Install`)
+      ourServices.executeNpm(
+        { packageName, command: 'install' },
+        crossLayerProps
+      )
+      log.info(`Running NPM Build`)
+      log.info(`Building package`)
+      ourServices.executeNpm(
+        { packageName, command: 'run build' },
+        crossLayerProps
+      )
     }
-    logger.info(`Running NPM Prettier`)
-    ourServices.executeNpm(packageName, 'run prettier')
-    logger.info(`Running NPM Eslint`)
-    ourServices.executeNpm(packageName, 'run eslint')
-    logger.info(`New package complete`)
+    log.info(`Running NPM Prettier`)
+    ourServices.executeNpm(
+      { packageName, command: 'run prettier' },
+      crossLayerProps
+    )
+    log.info(`Running NPM Build`)
+    ourServices.executeNpm(
+      { packageName, command: 'run build' },
+      crossLayerProps
+    )
+    log.info(`Running NPM Eslint`)
+    ourServices.executeNpm(
+      { packageName, command: 'run eslint' },
+      crossLayerProps
+    )
+    log.info(`New package complete`)
   }
 
   return {
     createPackage,
   }
 }
-
-export { create }

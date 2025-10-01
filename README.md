@@ -2,6 +2,10 @@
 
 The official tools for working with Node In Layers systems.
 
+## This is the best place to start with Node in Layers
+
+The nil-toolkit is the recommended way to create Node in Layer systems, as well as appending new apps to them.
+
 # How To Install
 
 `npm i -g @node-in-layers/toolkit@latest`
@@ -18,7 +22,7 @@ Run `nil-toolkit` from the command line. It has the following commands.
 
 ### create-system
 
-This command creates a new Node In Layers system
+This command creates a new Node In Layers system.
 
 ### create-package
 

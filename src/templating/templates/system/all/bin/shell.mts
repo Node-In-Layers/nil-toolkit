@@ -19,9 +19,11 @@ const _parseArguments = () => {
 }
 
 const _systemStartup = async (environment) => {
+  process.chdir('./src')
   return core.loadSystem({
     environment,
   })
+  process.chdir('../')
 }
 
 const help = (objects) => () => {

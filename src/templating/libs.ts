@@ -1,5 +1,5 @@
-import kebabCase from 'lodash/kebabCase.js'
 import startCase from 'lodash/startCase.js'
+import camelCase from 'lodash/camelCase.js'
 import hb from 'handlebars'
 import { FinalizedTemplate, TemplatedFile } from './types.js'
 
@@ -39,6 +39,6 @@ const applyTemplates = (
   })
 }
 
-const createValidName = kebabCase
+const createValidName = camelCase
 
 export { applyTemplates, createValidName }

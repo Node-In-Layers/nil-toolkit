@@ -1,51 +1,50 @@
+import { LayerFunction } from '@node-in-layers/core'
 import { Namespace } from '../types.js'
 
-type TemplatedFile = {
+export type TemplatedFile = {
   relativePath: string
   sourceData: string
 }
 
-type FinalizedTemplate = Readonly<{
+export type FinalizedTemplate = Readonly<{
   relativePath: string
   templatedData: string
 }>
 
-enum PackageType {
+export enum PackageType {
   typescript = 'typescript',
   esm = 'esm',
-  commonjs = 'commonjs',
 }
 
-type TemplatingServices = Readonly<{
-  createDirectory: (name: string, options?: { inSrc: boolean }) => void
-  readTemplates: (
-    name: string,
-    packageType: PackageType | 'all'
-  ) => Promise<readonly TemplatedFile[]>
-  writeTemplates: (
-    packageName: string,
-    templates: readonly Required<FinalizedTemplate>[],
-    options?: { ignoreNameInDir?: boolean }
-  ) => void
-  getDependencyVersion: (key: string) => Promise<string>
+export type TemplatingServices = Readonly<{
+  createDirectory: LayerFunction<
+    (props: { name: string; options?: { inSrc: boolean } }) => void
+  >
+  readTemplates: LayerFunction<
+    (props: {
+      name: string
+      packageType: PackageType | 'all'
+      nested?: string
+    }) => Promise<readonly TemplatedFile[]>
+  >
+  writeTemplates: LayerFunction<
+    (props: {
+      packageName: string
+      templates: readonly Required<FinalizedTemplate>[]
+      options?: { ignoreNameInDir?: boolean }
+    }) => void
+  >
+  getDependencyVersion: LayerFunction<
+    (props: { key: string }) => Promise<string>
+  >
 }>
 
-type TemplatingServicesLayer = Readonly<{
+export type TemplatingServicesLayer = Readonly<{
   [Namespace.templating]: TemplatingServices
 }>
 
-type TemplatingFeatures = Readonly<object>
+export type TemplatingFeatures = Readonly<object>
 
-type TemplatingFeaturesLayer = Readonly<{
+export type TemplatingFeaturesLayer = Readonly<{
   [Namespace.templating]: TemplatingFeatures
 }>
-
-export {
-  TemplatingServices,
-  TemplatingServicesLayer,
-  TemplatingFeatures,
-  TemplatingFeaturesLayer,
-  TemplatedFile,
-  FinalizedTemplate,
-  PackageType,
-}

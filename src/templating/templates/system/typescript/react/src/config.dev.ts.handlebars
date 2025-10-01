@@ -1,0 +1,18 @@
+import { CoreNamespace } from '@node-in-layers/core/index.js'
+
+const core = {
+  apps: await Promise.all([
+    import(`./home/index.js`),
+  ]),
+  layerOrder: ['services', 'features', 'entries'],
+  logging: {
+    logLevel: 'debug',
+    logFormat: 'json',
+  }
+}
+
+export default () => ({
+  environment: 'dev',
+  systemName: '{{systemName}}',
+  [CoreNamespace.root]: core,
+})

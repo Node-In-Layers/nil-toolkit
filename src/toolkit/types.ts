@@ -1,15 +1,13 @@
 import { Namespace } from '../types.js'
 
-type ToolkitServices = Readonly<object>
+export type ToolkitServices = Readonly<object>
 
-type ToolkitServicesLayer = {
+export type ToolkitServicesLayer = {
   [Namespace.toolkit]: ToolkitServices
 }
 
-enum Command {
+export enum Command {
   createApp = 'createApp',
   createPackage = 'createPackage',
   createSystem = 'createSystem',
 }
-
-export { ToolkitServicesLayer, ToolkitServices, Command }

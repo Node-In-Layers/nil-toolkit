@@ -26,6 +26,9 @@ const _parseArguments = () => {
   newApp.add_argument('appName', {
     help: 'The name of the app',
   })
+  newApp.add_argument('-n', '--namespace', {
+    help: 'The namespace for the app. Defaults to the appName.',
+  })
 
   const packageParser = subParsers.add_parser('create-package', {
     help: 'Create a new package.',
@@ -42,8 +45,11 @@ const _parseArguments = () => {
   addSystemParser.add_argument('systemName', {
     help: 'The name for the system.',
   })
-  addSystemParser.add_argument('systemType', {
+  addSystemParser.add_argument('systemLanguage', {
     help: 'typescript, esm, commonjs',
+  })
+  addSystemParser.add_argument('systemType', {
+    help: 'rest, react',
   })
 
   const args = parser.parse_args()
