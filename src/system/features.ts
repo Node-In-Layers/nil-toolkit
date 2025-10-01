@@ -1,8 +1,9 @@
 import { Config, CrossLayerProps, FeaturesContext } from '@node-in-layers/core'
 import { Namespace } from '../types.js'
 import { PackageFeaturesLayer, PackageServicesLayer } from '../package/types.js'
-import { applyTemplates, createValidName } from '../templating/libs.js'
+import { applyTemplates } from '../templating/libs.js'
 import { TemplatingServicesLayer, PackageType } from '../templating/types.js'
+import { createValidSystemName } from './libs.js'
 import { SystemServicesLayer, SystemType } from './types.js'
 
 export const create = (
@@ -26,7 +27,7 @@ export const create = (
   ) => {
     const log = context.log.getInnerLogger('createSystem')
     const { systemLanguage, systemType } = props
-    const systemName = createValidName(props.systemName)
+    const systemName = createValidSystemName(props.systemName)
     await context.features['@node-in-layers/toolkit/package'].createPackage(
       {
         packageName: systemName,
