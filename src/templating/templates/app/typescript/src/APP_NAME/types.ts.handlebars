@@ -1,18 +1,11 @@
-type {{appNameTitleCase}}Services = Readonly<object>
+export type {{appNameTitleCase}}Services = Readonly<object>
 
-type {{appNameTitleCase}}ServicesLayer = Readonly<{
+export type {{appNameTitleCase}}ServicesLayer = Readonly<{
   '{{namespace}}': {{appNameTitleCase}}Services
 }>
 
-type {{appNameTitleCase}}Features = Readonly<object>
+export type {{appNameTitleCase}}Features = Readonly<object>
 
-type {{appNameTitleCase}}FeaturesLayer = Readonly<{
+export type {{appNameTitleCase}}FeaturesLayer = Readonly<{
   '{{namespace}}': {{appNameTitleCase}}Features
 }>
-
-export {
-  {{appNameTitleCase}}Services,
-  {{appNameTitleCase}}ServicesLayer,
-  {{appNameTitleCase}}Features,
-  {{appNameTitleCase}}FeaturesLayer,
-}
