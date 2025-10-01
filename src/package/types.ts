@@ -1,37 +1,30 @@
+import { LayerFunction } from '@node-in-layers/core'
 import { Namespace } from '../types.js'
 import { PackageType } from '../templating/types.js'
 
-type PackageServices = Readonly<{
-  executeNpm: (packageName: string, command: string, args?: string[]) => void
-  executeBashCommand: (
-    packageName: string,
-    command: string,
-    args?: readonly string[]
-  ) => void
+export type PackageServices = Readonly<{
+  executeNpm: LayerFunction<
+    (props: { packageName: string; command: string; args?: string[] }) => void
+  >
+  executeBashCommand: LayerFunction<
+    (props: {
+      packageName: string
+      command: string
+      args?: readonly string[]
+    }) => void
+  >
 }>
 
-type PackageServicesLayer = Readonly<{
+export type PackageServicesLayer = Readonly<{
   [Namespace.package]: PackageServices
 }>
 
-type PackageFeatures = Readonly<{
-  createPackage: ({
-    packageName,
-    packageType,
-  }: {
-    packageName: string
-    packageType: PackageType
-  }) => Promise<void>
+export type PackageFeatures = Readonly<{
+  createPackage: LayerFunction<
+    (props: { packageName: string; packageType: PackageType }) => Promise<void>
+  >
 }>
 
-type PackageFeaturesLayer = Readonly<{
+export type PackageFeaturesLayer = Readonly<{
   [Namespace.package]: PackageFeatures
 }>
-
-export {
-  PackageServices,
-  PackageServicesLayer,
-  PackageType,
-  PackageFeatures,
-  PackageFeaturesLayer,
-}

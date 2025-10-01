@@ -5,7 +5,7 @@ import { AppFeaturesLayer } from '../app/types.js'
 import { SystemFeaturesLayer } from '../system/types.js'
 import { Namespace } from '../types.js'
 
-const create = (
+export const create = (
   context: FeaturesContext<
     Config,
     object,
@@ -26,5 +26,3 @@ const create = (
     createApp,
   }
 }
-
-export { create }

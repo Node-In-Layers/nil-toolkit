@@ -1,25 +1,25 @@
 import exec from 'node:child_process'
 import { PackageServices } from './types.js'
 
-const create = (): PackageServices => {
-  const executeNpm = (
-    packageName: string,
-    command: string,
+export const create = (): PackageServices => {
+  const executeNpm = (props: {
+    packageName: string
+    command: string
     args?: readonly string[]
-  ) => {
-    const cliArgs = args ? ` ${args.join(' ')}` : ''
-    exec.execSync(`cd ${packageName} && npm ${command}${cliArgs}`, {
+  }) => {
+    const cliArgs = props.args ? ` ${props.args.join(' ')}` : ''
+    exec.execSync(`cd ${props.packageName} && npm ${props.command}${cliArgs}`, {
       stdio: 'inherit',
     })
   }
 
-  const executeBashCommand = (
-    packageName: string,
-    command: string,
+  const executeBashCommand = (props: {
+    packageName: string
+    command: string
     args?: readonly string[]
-  ) => {
-    const cliArgs = args ? ` ${args.join(' ')}` : ''
-    exec.execSync(`cd ${packageName} && ${command}${cliArgs}`, {
+  }) => {
+    const cliArgs = props.args ? ` ${props.args.join(' ')}` : ''
+    exec.execSync(`cd ${props.packageName} && ${props.command}${cliArgs}`, {
       stdio: 'inherit',
     })
   }
@@ -29,5 +29,3 @@ const create = (): PackageServices => {
     executeBashCommand,
   }
 }
-
-export { create }

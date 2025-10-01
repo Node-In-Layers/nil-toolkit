@@ -1,23 +1,24 @@
+import { LayerFunction } from '@node-in-layers/core'
 import { PackageType } from '../templating/types.js'
 import { Namespace } from '../types.js'
 
-type AppServices = Readonly<{
-  isPackageRoot: () => Promise<boolean>
-  doesAppAlreadyExist: (appName: string) => boolean
-  getPackageName: () => Promise<string>
-  getPackageType: () => Promise<PackageType>
+export type AppServices = Readonly<{
+  isPackageRoot: LayerFunction<() => Promise<boolean>>
+  doesAppAlreadyExist: LayerFunction<
+    ({ appName }: { appName: string }) => boolean
+  >
+  getPackageName: LayerFunction<() => Promise<string>>
+  getPackageType: LayerFunction<() => Promise<PackageType>>
 }>
 
-type AppServicesLayer = Readonly<{
+export type AppServicesLayer = Readonly<{
   [Namespace.app]: AppServices
 }>
 
-type AppFeatures = Readonly<{
-  createApp: ({ appName }: { appName: string }) => Promise<void>
+export type AppFeatures = Readonly<{
+  createApp: LayerFunction<({ appName }: { appName: string }) => Promise<void>>
 }>
 
-type AppFeaturesLayer = Readonly<{
+export type AppFeaturesLayer = Readonly<{
   [Namespace.app]: AppFeatures
 }>
-
-export { AppServices, AppServicesLayer, AppFeatures, AppFeaturesLayer }

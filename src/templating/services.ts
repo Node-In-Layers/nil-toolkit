@@ -3,14 +3,17 @@ import { fileURLToPath } from 'url'
 import path, { dirname } from 'node:path'
 import * as glob from 'glob'
 import { ServicesContext } from '@node-in-layers/core'
-import { PackageType } from '../package/types.js'
-import { TemplatingServices, TemplatedFile } from './types.js'
+import {
+  FinalizedTemplate,
+  PackageType,
+  TemplatingServices,
+  TemplatedFile,
+} from './types.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const create = (context: ServicesContext): TemplatingServices => {
+export const create = (context: ServicesContext): TemplatingServices => {
   const _getToolkitPackageJsonPath = async (): Promise<string | undefined> => {
     // Depending on if this is in a src or dist folder, this location will change.
     const wd = path.join(__dirname, '../**/package.json')
@@ -19,23 +22,26 @@ const create = (context: ServicesContext): TemplatingServices => {
     )
   }
 
-  const getDependencyVersion = async (key: string) => {
+  const getDependencyVersion = async (props: { key: string }) => {
     const packageJsonPath = await _getToolkitPackageJsonPath()
     if (!packageJsonPath) {
       throw new Error(`Could not find nil-toolkit's package.json file.`)
     }
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
-    const value = packageJson.dependencies[key]
+    const value = packageJson.dependencies[props.key]
     if (!value) {
-      throw new Error(`${key} does not exist inside package.json`)
+      throw new Error(`${props.key} does not exist inside package.json`)
     }
     return value
   }
 
-  const createDirectory = (name: string, options?: { inSrc: boolean }) => {
-    const parts = options?.inSrc
-      ? [context.constants.workingDirectory, 'src', name]
-      : [context.constants.workingDirectory, name]
+  const createDirectory = (props: {
+    name: string
+    options?: { inSrc: boolean }
+  }) => {
+    const parts = props.options?.inSrc
+      ? [context.constants.workingDirectory, 'src', props.name]
+      : [context.constants.workingDirectory, props.name]
     const fullPath = path.join(...parts)
     if (fs.existsSync(fullPath)) {
       throw new Error(`${fullPath} already exists. Must be a new directory.`)
@@ -43,26 +49,29 @@ const create = (context: ServicesContext): TemplatingServices => {
     fs.mkdirSync(fullPath)
   }
 
-  const _readAllTemplateFiles = async (
-    subDirectory: string,
-    packageType: PackageType | 'all',
+  const readTemplates = async (props: {
+    name: string
+    packageType: PackageType | 'all'
     nested?: string
-  ): Promise<readonly TemplatedFile[]> => {
-    const templatePath = nested
+  }): Promise<readonly TemplatedFile[]> => {
+    const templatePath = props.nested
       ? path.join(
           __dirname,
-          `./templates/${subDirectory}/${packageType}/${nested}/**/*`
+          `./templates/${props.name}/${props.packageType}/${props.nested}/**/*`
         )
-      : path.join(__dirname, `./templates/${subDirectory}/${packageType}/**/*`)
+      : path.join(
+          __dirname,
+          `./templates/${props.name}/${props.packageType}/**/*`
+        )
     const paths = (await glob.glob(templatePath, { dot: true })).filter(p =>
       fs.lstatSync(p).isFile()
     )
     return paths.map(sourceLocation => {
       const dirA = path.join(
         __dirname,
-        nested
-          ? `./templates/${subDirectory}/${packageType}/${nested}`
-          : `./templates/${subDirectory}/${packageType}`
+        props.nested
+          ? `./templates/${props.name}/${props.packageType}/${props.nested}`
+          : `./templates/${props.name}/${props.packageType}`
       )
       const relativePath = path.relative(dirA, sourceLocation)
       const sourceData = fs.readFileSync(sourceLocation, 'utf-8')
@@ -73,24 +82,26 @@ const create = (context: ServicesContext): TemplatingServices => {
     })
   }
 
-  const readTemplates = _readAllTemplateFiles
-
-  const writeTemplates = (name, templates, options): void => {
-    templates.forEach(t => {
+  const writeTemplates = (props: {
+    packageName: string
+    templates: readonly Required<FinalizedTemplate>[]
+    options?: { ignoreNameInDir?: boolean }
+  }): void => {
+    props.templates.forEach(t => {
       const pathParts = [
         context.constants.workingDirectory,
-        ...(options?.ignoreNameInDir ? [] : [name]),
+        ...(props.options?.ignoreNameInDir ? [] : [props.packageName]),
         t.relativePath,
       ]
       const finalLocation = path
         .join(...pathParts)
         .replaceAll('.handlebars', '')
-        .replaceAll('PACKAGE_NAME', name)
-        .replaceAll('APP_NAME', name)
-        .replaceAll('SYSTEM_NAME', name)
+        .replaceAll('PACKAGE_NAME', props.packageName)
+        .replaceAll('APP_NAME', props.packageName)
+        .replaceAll('SYSTEM_NAME', props.packageName)
       const dirPath = path.dirname(finalLocation)
       fs.mkdirSync(dirPath, { recursive: true })
-      fs.writeFileSync(finalLocation, t.templatedData)
+      fs.writeFileSync(finalLocation, t.templatedData as string)
     })
   }
 
@@ -101,5 +112,3 @@ const create = (context: ServicesContext): TemplatingServices => {
     getDependencyVersion,
   }
 }
-
-export { create }
