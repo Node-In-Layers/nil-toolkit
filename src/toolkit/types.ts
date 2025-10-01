@@ -10,4 +10,5 @@ export enum Command {
   createApp = 'createApp',
   createPackage = 'createPackage',
   createSystem = 'createSystem',
+  createModel = 'createModel',
 }

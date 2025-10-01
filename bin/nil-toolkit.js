@@ -19,6 +19,15 @@ const _parseArguments = () => {
     title: 'command',
     dest: 'command',
   })
+  const createModelParser = subParsers.add_parser('create-model', {
+    help: 'Create a new model in an existing module.',
+  })
+  createModelParser.add_argument('moduleName', {
+    help: 'The name of the module to add the model to.',
+  })
+  createModelParser.add_argument('-d', '--data', {
+    help: 'JSON string of arguments for non-interactive usage',
+  })
   const newApp = subParsers.add_parser('create-app', {
     help: 'Create a new app in an existing system.',
   })

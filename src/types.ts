@@ -5,4 +5,5 @@ export enum Namespace {
   toolkit = '@node-in-layers/toolkit/toolkit',
   app = '@node-in-layers/toolkit/app',
   templating = '@node-in-layers/toolkit/templating',
+  models = '@node-in-layers/toolkit/models',
 }
