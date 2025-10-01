@@ -17,6 +17,7 @@ const create = async (options: {
         await import('./templating/index.js'),
         await import('./package/index.js'),
         await import('./app/index.js'),
+        await import('./models/index.js'),
         await import('./system/index.js'),
         await import('./toolkit/index.js'),
       ],
