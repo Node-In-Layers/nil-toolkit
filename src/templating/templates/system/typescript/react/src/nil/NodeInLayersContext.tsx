@@ -1,19 +1,26 @@
-import {createContext, useContext, useEffect, useReducer} from 'react'
-import { loadSystem } from '@node-in-layers/core/index.js'
-import { default as configFunc } from './config.dev.js'
+import React, {createContext, useContext, useEffect, useReducer} from 'react'
+import { loadSystem } from '@node-in-layers/core'
+import { getConfig } from '../config.js'
+import { SystemContext } from '../system/types.js'
 
 
-const NodeInLayersContext = createContext({})
+const NodeInLayersContext = createContext<SystemContext & { loaded: boolean }>(
+  // ts-ignore
+  {loaded: false}
+)
 
 type UpdateContext = Readonly<{
   type: string,
-  payload: object
+  payload: SystemContext
 }>
 
-const contextReducer = (obj, action: UpdateContext) => {
+const contextReducer = (obj: SystemContext, action: UpdateContext) => {
   switch(action.type) {
     case 'update': {
-      return action.payload
+      return {
+        ...action.payload,
+        loaded: true
+      }
     }
     default: {
       return obj
@@ -21,21 +28,20 @@ const contextReducer = (obj, action: UpdateContext) => {
   }
 }
 
-const NodeInLayersContextProvider = ({ children }) => {
+const NodeInLayersContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [context, dispatch] = useReducer(
     contextReducer,
-    {},
+    {loaded: false},
   )
   useEffect(() => {
     _loadContext()
   },[])
 
   const _loadContext = async () => {
-    const config = await configFunc()
+    const config = await getConfig()
     const system = await loadSystem({
       environment: import.meta.env.MODE,
       config,
-      nodeOverrides: { fs: {}},
     })
     dispatch({
       type: 'update',
