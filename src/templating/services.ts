@@ -85,11 +85,12 @@ export const create = (context: ServicesContext): TemplatingServices => {
   const writeTemplates = (props: {
     packageName: string
     templates: readonly Required<FinalizedTemplate>[]
-    options?: { ignoreNameInDir?: boolean }
+    options?: { ignoreNameInDir?: boolean; baseDirName?: string }
   }): void => {
     props.templates.forEach(t => {
       const pathParts = [
         context.constants.workingDirectory,
+        ...(props.options?.baseDirName ? [props.options.baseDirName] : []),
         ...(props.options?.ignoreNameInDir ? [] : [props.packageName]),
         t.relativePath,
       ]

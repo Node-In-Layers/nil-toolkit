@@ -200,7 +200,7 @@ export default [
       'functional/no-return-void': 0,
       'functional/no-promise-reject': 0,
       'functional/no-throw-statement': 0,
-      'functional/no-try-statements': ['error'],
+      'functional/no-try-statements': 0,
       'functional/readonly-type': ['error'],
       'functional/functional-parameters': 0,
       'import/no-unresolved': ['error'],

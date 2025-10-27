@@ -20,14 +20,14 @@ export const create = (
   context: FeaturesContext<Config, ModelsServicesLayer, ModelsFeaturesLayer>
 ) => {
   const createModel = async (
-    { moduleName, data }: CreateModelProps,
+    { domainName, data }: CreateModelProps,
     crossLayerProps?: CrossLayerProps
   ) => {
     const log = context.log.getInnerLogger('createModel')
     const services = context.services[Namespace.models]
-    log.info('Validating module exists')
-    if (!services.doesModuleExist({ moduleName }, crossLayerProps)) {
-      throw new Error(`Module ${moduleName} does not exist under ./src`)
+    log.info('Validating domain exists')
+    if (!services.doesDomainExist({ domainName }, crossLayerProps)) {
+      throw new Error(`Domain ${domainName} does not exist under ./src`)
     }
     const defaults = {
       primaryKeyName: 'id',
@@ -40,12 +40,12 @@ export const create = (
           const parsed = parseCreateModelData(data)
           if (
             services.doesModelExist(
-              { moduleName, pluralTitle: parsed.pluralTitle },
+              { domainName, pluralTitle: parsed.pluralTitle },
               crossLayerProps
             )
           ) {
             throw new Error(
-              `Model ${parsed.pluralTitle} already exists in module ${moduleName}`
+              `Model ${parsed.pluralTitle} already exists in domain ${domainName}`
             )
           }
           return parsed
@@ -64,12 +64,12 @@ export const create = (
           const nextPluralTitle = toTitleNoSpaces(pluralName)
           if (
             services.doesModelExist(
-              { moduleName, pluralTitle: nextPluralTitle },
+              { domainName, pluralTitle: nextPluralTitle },
               crossLayerProps
             )
           ) {
             throw new Error(
-              `Model ${nextPluralTitle} already exists in module ${moduleName}`
+              `Model ${nextPluralTitle} already exists in domain ${domainName}`
             )
           }
           const suggestedSingular = toTitleNoSpaces(
@@ -104,10 +104,10 @@ export const create = (
           }
         })()
 
-    services.ensureModelsDirectory({ moduleName }, crossLayerProps)
-    services.ensureModelsIndex({ moduleName }, crossLayerProps)
+    services.ensureModelsDirectory({ domainName }, crossLayerProps)
+    services.ensureModelsIndex({ domainName }, crossLayerProps)
     const source = buildModelSource({
-      moduleName,
+      domainName,
       pluralTitle: resolved.pluralTitle,
       singularTitle: resolved.singularTitle,
       primaryKeyName: resolved.primaryKeyName,
@@ -115,17 +115,17 @@ export const create = (
       includeUpdatedAt: resolved.includeUpdatedAt,
     })
     services.writeModelFile(
-      { moduleName, pluralTitle: resolved.pluralTitle, source },
+      { domainName, pluralTitle: resolved.pluralTitle, source },
       crossLayerProps
     )
     services.exportModelInIndex(
-      { moduleName, pluralTitle: resolved.pluralTitle },
+      { domainName, pluralTitle: resolved.pluralTitle },
       crossLayerProps
     )
-    services.ensureTypesFile({ moduleName }, crossLayerProps)
+    services.ensureTypesFile({ domainName }, crossLayerProps)
     services.addTypeIfMissing(
       {
-        moduleName,
+        domainName,
         singularName: resolved.singularTitle,
         primaryKeyName: resolved.primaryKeyName,
         includeCreatedAt: resolved.includeCreatedAt,

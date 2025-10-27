@@ -2,61 +2,61 @@ import { LayerFunction } from '@node-in-layers/core'
 import { Namespace } from '../types.js'
 
 export type CreateModelProps = Readonly<{
-  moduleName: string
+  domainName: string
   data?: string
 }>
 
 export type ModelsServices = Readonly<{
-  doesModuleExist: LayerFunction<
-    ({ moduleName }: { moduleName: string }) => boolean
+  doesDomainExist: LayerFunction<
+    ({ domainName }: { domainName: string }) => boolean
   >
   doesModelExist: LayerFunction<
     ({
-      moduleName,
+      domainName,
       pluralTitle,
     }: {
-      moduleName: string
+      domainName: string
       pluralTitle: string
     }) => boolean
   >
   ensureModelsDirectory: LayerFunction<
-    ({ moduleName }: { moduleName: string }) => void
+    ({ domainName }: { domainName: string }) => void
   >
   ensureModelsIndex: LayerFunction<
-    ({ moduleName }: { moduleName: string }) => void
+    ({ domainName }: { domainName: string }) => void
   >
   exportModelInIndex: LayerFunction<
     ({
-      moduleName,
+      domainName,
       pluralTitle,
     }: {
-      moduleName: string
+      domainName: string
       pluralTitle: string
     }) => void
   >
   writeModelFile: LayerFunction<
     ({
-      moduleName,
+      domainName,
       pluralTitle,
       source,
     }: {
-      moduleName: string
+      domainName: string
       pluralTitle: string
       source: string
     }) => void
   >
   ensureTypesFile: LayerFunction<
-    ({ moduleName }: { moduleName: string }) => void
+    ({ domainName }: { domainName: string }) => void
   >
   addTypeIfMissing: LayerFunction<
     ({
-      moduleName,
+      domainName,
       singularName,
       primaryKeyName,
       includeCreatedAt,
       includeUpdatedAt,
     }: {
-      moduleName: string
+      domainName: string
       singularName: string
       primaryKeyName: string
       includeCreatedAt: boolean

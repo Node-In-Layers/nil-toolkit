@@ -1,0 +1,17 @@
+{
+  "name": "{{systemName}}",
+  "private": true,
+  "workspaces": [
+    "sdk",
+    "backend"{{#if frontendName}},
+    "frontend"{{/if}}
+  ],
+  "scripts": {
+    "bootstrap": "npm install",
+    "build": "npm --workspaces run build",
+    "dev": "npm --workspaces run dev",
+    "test": "npm --workspaces run test"
+  }
+}
+
+

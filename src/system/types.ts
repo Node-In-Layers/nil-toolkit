@@ -2,27 +2,44 @@ import { LayerFunction } from '@node-in-layers/core'
 import { Namespace } from '../types.js'
 import { PackageType } from '../templating/types.js'
 
-export type SystemServices = Readonly<object>
+export type SystemServices = Readonly<{
+  ensureSystemDirectory: LayerFunction<(props: { systemName: string }) => void>
+  writeSystemMarker: LayerFunction<
+    (props: { systemName: string; description: string }) => void
+  >
+  linkSdkInPackage: LayerFunction<
+    (props: {
+      systemName: string
+      packageName: string
+      sdkName: string
+    }) => void
+  >
+}>
 
 export type SystemServicesLayer = Readonly<{
   [Namespace.system]: SystemServices
 }>
-
-export enum SystemType {
-  rest = 'rest',
-  react = 'react',
-}
 
 export type SystemFeatures = Readonly<{
   createSystem: LayerFunction<
     ({
       systemName,
       systemLanguage,
-      systemType,
+      sdkName,
+      sdkTransport,
+      backendName,
+      backendType,
+      frontendName,
+      noFrontend,
     }: {
       systemName: string
       systemLanguage: PackageType
-      systemType: SystemType
+      sdkName: string
+      sdkTransport: 'mcp' | 'rest'
+      backendName: string
+      backendType: 'mcp' | 'rest'
+      frontendName?: string
+      noFrontend?: boolean
     }) => Promise<void>
   >
 }>

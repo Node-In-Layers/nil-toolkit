@@ -8,6 +8,7 @@ export type ToolkitServicesLayer = {
 
 export enum Command {
   createApp = 'createApp',
+  createDomain = 'createDomain',
   createPackage = 'createPackage',
   createSystem = 'createSystem',
   createModel = 'createModel',

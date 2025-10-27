@@ -5,38 +5,38 @@ import { ServicesContext } from '@node-in-layers/core'
 import { ModelsServices } from './types.js'
 
 export const create = (context: ServicesContext): ModelsServices => {
-  const _getModuleDir = (moduleName: string) =>
-    path.join(context.constants.workingDirectory, 'src', moduleName)
-  const _getModelsDir = (moduleName: string) =>
-    path.join(_getModuleDir(moduleName), 'models')
+  const _getDomainDir = (domainName: string) =>
+    path.join(context.constants.workingDirectory, 'src', domainName)
+  const _getModelsDir = (domainName: string) =>
+    path.join(_getDomainDir(domainName), 'models')
 
-  const doesModuleExist = ({ moduleName }: { moduleName: string }) => {
-    const dir = _getModuleDir(moduleName)
+  const doesDomainExist = ({ domainName }: { domainName: string }) => {
+    const dir = _getDomainDir(domainName)
     return fs.existsSync(dir) && fs.lstatSync(dir).isDirectory()
   }
 
-  const ensureModelsDirectory = ({ moduleName }: { moduleName: string }) => {
-    const dir = _getModelsDir(moduleName)
+  const ensureModelsDirectory = ({ domainName }: { domainName: string }) => {
+    const dir = _getModelsDir(domainName)
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true })
     }
   }
 
-  const ensureModelsIndex = ({ moduleName }: { moduleName: string }) => {
-    const idx = path.join(_getModelsDir(moduleName), 'index.ts')
+  const ensureModelsIndex = ({ domainName }: { domainName: string }) => {
+    const idx = path.join(_getModelsDir(domainName), 'index.ts')
     if (!fs.existsSync(idx)) {
       fs.writeFileSync(idx, '\n')
     }
   }
 
   const exportModelInIndex = ({
-    moduleName,
+    domainName,
     pluralTitle,
   }: {
-    moduleName: string
+    domainName: string
     pluralTitle: string
   }) => {
-    const idx = path.join(_getModelsDir(moduleName), 'index.ts')
+    const idx = path.join(_getModelsDir(domainName), 'index.ts')
     const line = `export * as ${pluralTitle} from './${pluralTitle}.js'\n`
     const existing = fs.readFileSync(idx, 'utf-8')
     if (!existing.includes(line.trim())) {
@@ -45,50 +45,50 @@ export const create = (context: ServicesContext): ModelsServices => {
   }
 
   const doesModelExist = ({
-    moduleName,
+    domainName,
     pluralTitle,
   }: {
-    moduleName: string
+    domainName: string
     pluralTitle: string
   }) => {
-    const filePath = path.join(_getModelsDir(moduleName), `${pluralTitle}.ts`)
+    const filePath = path.join(_getModelsDir(domainName), `${pluralTitle}.ts`)
     return fs.existsSync(filePath)
   }
 
   const writeModelFile = ({
-    moduleName,
+    domainName,
     pluralTitle,
     source,
   }: {
-    moduleName: string
+    domainName: string
     pluralTitle: string
     source: string
   }) => {
-    const filePath = path.join(_getModelsDir(moduleName), `${pluralTitle}.ts`)
+    const filePath = path.join(_getModelsDir(domainName), `${pluralTitle}.ts`)
     fs.writeFileSync(filePath, source)
   }
 
-  const ensureTypesFile = ({ moduleName }: { moduleName: string }) => {
-    const typesPath = path.join(_getModuleDir(moduleName), 'types.ts')
+  const ensureTypesFile = ({ domainName }: { domainName: string }) => {
+    const typesPath = path.join(_getDomainDir(domainName), 'types.ts')
     if (!fs.existsSync(typesPath)) {
       fs.writeFileSync(typesPath, '')
     }
   }
 
   const addTypeIfMissing = ({
-    moduleName,
+    domainName,
     singularName,
     primaryKeyName,
     includeCreatedAt,
     includeUpdatedAt,
   }: {
-    moduleName: string
+    domainName: string
     singularName: string
     primaryKeyName: string
     includeCreatedAt: boolean
     includeUpdatedAt: boolean
   }) => {
-    const typesPath = path.join(_getModuleDir(moduleName), 'types.ts')
+    const typesPath = path.join(_getDomainDir(domainName), 'types.ts')
     const content = fs.readFileSync(typesPath, 'utf-8')
     const typeName = singularName
     const signature = `export type ${typeName} =`
@@ -109,7 +109,7 @@ export const create = (context: ServicesContext): ModelsServices => {
   }
 
   return {
-    doesModuleExist,
+    doesDomainExist,
     doesModelExist,
     ensureModelsDirectory,
     ensureModelsIndex,

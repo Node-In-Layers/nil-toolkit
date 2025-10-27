@@ -1,0 +1,22 @@
+// NOTE: JsonAble stuff ONLY.
+
+import {
+  CoreNamespace,
+  LogFormat,
+  LogLevelNames,
+} from '@node-in-layers/core/index.js'
+import type { LocalConfig } from './src/types.js'
+
+export default (): LocalConfig => ({
+  systemName: '{{systemName}}',
+  environment: 'local',
+  [CoreNamespace.root]: {
+    // This is added later in the system.
+    //apps: await Promise.all([import(`./home/index.js`)]),
+    layerOrder: ['services', ['features', 'forms'], 'entries'],
+    logging: {
+      logLevel: LogLevelNames.warn,
+      logFormat: LogFormat.json,
+    },
+  },
+})

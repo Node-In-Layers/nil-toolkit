@@ -1,0 +1,32 @@
+// This really is only used for examples, as well as for the shell. (local cli)
+import { SdkBasicConfig } from './src/types.js'
+import { McpClientNamespace } from '@node-in-layers/mcp-client'
+import { CoreNamespace, LogLevelNames, LogFormat } from '@node-in-layers/core'
+
+export default (): SdkBasicConfig => ({
+  name: '{{sdkName}}',
+  systemName: '{{sdkName}}',
+  environment: 'base',
+  [CoreNamespace.root]: {
+    logging: {
+      logLevel: LogLevelNames.info,
+      logFormat: LogFormat.json,
+      ignoreLayerFunctions: {
+        [McpClientNamespace.client]: true,
+        [McpClientNamespace.data]: true,
+        [`${McpClientNamespace.mcp}.services.createMcpFeature`]: true,
+      },
+    },
+    layerOrder: ['services', 'features', ['entries', 'mcp']],
+    modelFactory: McpClientNamespace.data,
+    modelCruds: true,
+  },
+  [McpClientNamespace.client]: {
+    mcp: {
+      connection: {
+        type: 'http',
+        url: 'http://localhost:5001',
+      }
+    },
+  },
+})

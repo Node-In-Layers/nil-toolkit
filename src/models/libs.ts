@@ -46,7 +46,7 @@ export const parseCreateModelData = (data: string): ParseDataResult => {
 }
 
 export const buildModelSource = (args: {
-  moduleName: string
+  domainName: string
   pluralTitle: string
   singularTitle: string
   primaryKeyName: string
@@ -54,7 +54,7 @@ export const buildModelSource = (args: {
   includeUpdatedAt: boolean
 }) => {
   const {
-    moduleName,
+    domainName,
     pluralTitle,
     singularTitle,
     primaryKeyName,
@@ -82,7 +82,7 @@ export const create = ({ Model }: ModelProps) => {
   return Model<${singularTitle}>({
     pluralName: '${pluralTitle}',
     singularName: '${singularTitle}',
-    namespace: '${moduleName}',
+    namespace: '${domainName}',
     primaryKeyName: '${primaryKeyName}',
     properties: {
 ${props.join('\n')}

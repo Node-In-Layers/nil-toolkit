@@ -1,0 +1,3 @@
+{
+  // Deprecated: use tsconfig.node.prod.json or tsconfig.node.local.json instead
+}

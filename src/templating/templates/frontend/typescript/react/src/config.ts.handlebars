@@ -1,0 +1,21 @@
+import merge from 'lodash/merge.js'
+import { CoreNamespace, memoizeValue } from '@node-in-layers/core'
+import type { LocalConfig, AppConfig } from './types.js'
+
+const _getLocalConfig = (): LocalConfig => {
+  const configText = __CONFIG__
+  return configText
+}
+
+export const getConfig = memoizeValue(async () => {
+  const config = _getLocalConfig()
+  return merge(config, {
+    systemName: '{{systemName}}',
+    [CoreNamespace.root]: {
+      apps: await Promise.all([
+        import(`./nil/index.js`),
+        import(`./home/index.js`),
+      ]),
+    },
+  }) as AppConfig
+})

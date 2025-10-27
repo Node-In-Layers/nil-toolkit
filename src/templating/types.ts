@@ -31,7 +31,7 @@ export type TemplatingServices = Readonly<{
     (props: {
       packageName: string
       templates: readonly Required<FinalizedTemplate>[]
-      options?: { ignoreNameInDir?: boolean }
+      options?: { ignoreNameInDir?: boolean; baseDirName?: string }
     }) => void
   >
   getDependencyVersion: LayerFunction<
