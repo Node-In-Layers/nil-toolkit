@@ -25,8 +25,20 @@ export const create = (
   ) => {
     const log = context.log.getInnerLogger('createModel')
     const services = context.services[Namespace.models]
+    const systemJson = await context.services[
+      Namespace.workspace
+    ].getSystemJson(
+      { inPath: context.constants.workingDirectory },
+      crossLayerProps
+    )
+
+    if (!systemJson?.sdkName) {
+      throw new Error('SDK name not found')
+    }
+    const sdkName = systemJson.sdkName
+
     log.info('Validating domain exists')
-    if (!services.doesDomainExist({ domainName }, crossLayerProps)) {
+    if (!services.doesDomainExist({ sdkName, domainName }, crossLayerProps)) {
       throw new Error(`Domain ${domainName} does not exist under ./src`)
     }
     const defaults = {
@@ -40,7 +52,7 @@ export const create = (
           const parsed = parseCreateModelData(data)
           if (
             services.doesModelExist(
-              { domainName, pluralTitle: parsed.pluralTitle },
+              { sdkName, domainName, pluralTitle: parsed.pluralTitle },
               crossLayerProps
             )
           ) {
@@ -64,7 +76,7 @@ export const create = (
           const nextPluralTitle = toTitleNoSpaces(pluralName)
           if (
             services.doesModelExist(
-              { domainName, pluralTitle: nextPluralTitle },
+              { sdkName, domainName, pluralTitle: nextPluralTitle },
               crossLayerProps
             )
           ) {
@@ -104,8 +116,8 @@ export const create = (
           }
         })()
 
-    services.ensureModelsDirectory({ domainName }, crossLayerProps)
-    services.ensureModelsIndex({ domainName }, crossLayerProps)
+    services.ensureModelsDirectory({ sdkName, domainName }, crossLayerProps)
+    services.ensureModelsIndex({ sdkName, domainName }, crossLayerProps)
     const source = buildModelSource({
       domainName,
       pluralTitle: resolved.pluralTitle,
@@ -115,16 +127,17 @@ export const create = (
       includeUpdatedAt: resolved.includeUpdatedAt,
     })
     services.writeModelFile(
-      { domainName, pluralTitle: resolved.pluralTitle, source },
+      { sdkName, domainName, pluralTitle: resolved.pluralTitle, source },
       crossLayerProps
     )
     services.exportModelInIndex(
-      { domainName, pluralTitle: resolved.pluralTitle },
+      { sdkName, domainName, pluralTitle: resolved.pluralTitle },
       crossLayerProps
     )
-    services.ensureTypesFile({ domainName }, crossLayerProps)
+    services.ensureTypesFile({ sdkName, domainName }, crossLayerProps)
     services.addTypeIfMissing(
       {
+        sdkName,
         domainName,
         singularName: resolved.singularTitle,
         primaryKeyName: resolved.primaryKeyName,

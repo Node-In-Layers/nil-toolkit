@@ -22,7 +22,7 @@ const _parseArguments = () => {
   const createModelParser = subParsers.add_parser('create-model', {
     help: 'Create a new model in an existing module.',
   })
-  createModelParser.add_argument('moduleName', {
+  createModelParser.add_argument('domainName', {
     help: 'The name of the module to add the model to.',
   })
   createModelParser.add_argument('-d', '--data', {

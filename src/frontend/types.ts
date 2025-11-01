@@ -3,7 +3,7 @@ import { Namespace } from '../types.js'
 import { PackageType } from '../templating/types.js'
 
 export type FrontendServices = Readonly<{
-  isSystemRoot: LayerFunction<() => Promise<boolean>>
+  isSystemRoot: LayerFunction<(props?: { inPath?: string }) => Promise<boolean>>
   doesFrontendAlreadyExist: LayerFunction<
     (props: { frontendName: string; rootDirName?: string }) => boolean
   >

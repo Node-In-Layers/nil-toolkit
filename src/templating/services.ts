@@ -16,7 +16,7 @@ const __dirname = dirname(__filename)
 export const create = (context: ServicesContext): TemplatingServices => {
   const _getToolkitPackageJsonPath = async (): Promise<string | undefined> => {
     // Depending on if this is in a src or dist folder, this location will change.
-    const wd = path.join(__dirname, '../**/package.json')
+    const wd = path.join(__dirname, '../../package.json')
     return (await glob.glob(wd, { ignore: '../node_modules/**' })).find(
       p => fs.lstatSync(p).isFile() && p.endsWith('package.json')
     )
@@ -63,6 +63,7 @@ export const create = (context: ServicesContext): TemplatingServices => {
           __dirname,
           `./templates/${props.name}/${props.packageType}/**/*`
         )
+
     const paths = (await glob.glob(templatePath, { dot: true })).filter(p =>
       fs.lstatSync(p).isFile()
     )
@@ -98,6 +99,7 @@ export const create = (context: ServicesContext): TemplatingServices => {
         .join(...pathParts)
         .replaceAll('.handlebars', '')
         .replaceAll('PACKAGE_NAME', props.packageName)
+        .replaceAll('DOMAIN_NAME', props.packageName)
         .replaceAll('APP_NAME', props.packageName)
         .replaceAll('SYSTEM_NAME', props.packageName)
       const dirPath = path.dirname(finalLocation)

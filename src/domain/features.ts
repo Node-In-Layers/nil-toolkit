@@ -1,3 +1,4 @@
+import path from 'node:path'
 import {
   FeaturesContext,
   Config,
@@ -6,17 +7,22 @@ import {
 import { PackageServicesLayer } from '../package/types.js'
 import { Namespace } from '../types.js'
 import { applyTemplates, createValidName } from '../templating/libs.js'
+import { WorkspaceServicesLayer } from '../workspace/types.js'
 import { TemplatingServicesLayer } from '../templating/types.js'
 import { DomainServicesLayer } from './types.js'
 
 export const create = (
   context: FeaturesContext<
     Config,
-    PackageServicesLayer & DomainServicesLayer & TemplatingServicesLayer
+    PackageServicesLayer &
+      DomainServicesLayer &
+      TemplatingServicesLayer &
+      WorkspaceServicesLayer
   >
 ) => {
   const createDomain = async (
     props: {
+      rootDirName?: string
       domainName: string
       namespace?: string
     },
@@ -27,22 +33,43 @@ export const create = (
 
     const domainName = createValidName(props.domainName)
 
-    if (!context.services[Namespace.domain].isPackageRoot(crossLayerProps)) {
+    const basePath = props.rootDirName
+      ? path.join(context.constants.workingDirectory, props.rootDirName)
+      : context.constants.workingDirectory
+
+    if (
+      !context.services[Namespace.workspace].isSystemRoot(
+        { inPath: basePath },
+        crossLayerProps
+      )
+    ) {
       throw new Error(
-        `Must be located in the main directory of your node-in-layers system or package. This is the same directory as the package.json.`
+        `Must be located in the main directory of your node-in-layers system (directory containing nil.system.json).`
       )
     }
 
+    const systemJson = await context.services[
+      Namespace.workspace
+    ].getSystemJson({ inPath: basePath }, crossLayerProps)
+    if (!systemJson?.sdkName) {
+      throw new Error('SDK name not found')
+    }
+
     log.debug('Checking if package exists.')
-    if (ourServices.doesDomainAlreadyExist({ domainName }, crossLayerProps)) {
+    if (
+      ourServices.doesDomainAlreadyExist(
+        { sdkName: systemJson.sdkName, domainName },
+        crossLayerProps
+      )
+    ) {
       throw new Error(`Domain ${domainName} already exists.`)
     }
 
-    log.info('Getting current package name')
-    const packageName = await ourServices.getPackageName(crossLayerProps)
-    log.info(`Package name is ${packageName}`)
     log.info('Getting package type')
-    const packageType = await ourServices.getPackageType(crossLayerProps)
+    const packageType = await ourServices.getPackageType(
+      { sdkName: systemJson.sdkName },
+      crossLayerProps
+    )
     log.info(`Package Type if ${packageType}`)
     log.info('Reading Templates')
     const templates = await context.services[
@@ -53,26 +80,59 @@ export const create = (
     )
     log.info('Apply Templates')
     const data = {
-      nodeInLayersCoreVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion({ key: '@node-in-layers/core' }, crossLayerProps),
-      packageName,
       domainName,
       appName: domainName, // back-compat for legacy templates
       namespace: props.namespace || domainName,
     }
     const appliedTemplates = applyTemplates(templates, data)
-    log.info('Writing templates')
+
+    log.info('Writing templates to SDK')
     context.services[Namespace.templating].writeTemplates(
       {
         packageName: domainName,
         templates: appliedTemplates,
-        options: { ignoreNameInDir: true },
+        options: {
+          baseDirName: systemJson.sdkName,
+          ignoreNameInDir: true,
+        },
       },
       crossLayerProps
     )
-    log.info('Operation complete')
+
+    const backendNames = systemJson.backends || []
+    const frontendNames = systemJson.frontends || []
+
+    backendNames.forEach(backendName => {
+      log.info(`Writing templates to Backend ${backendName}`)
+      context.services[Namespace.templating].writeTemplates(
+        {
+          packageName: domainName,
+          templates: appliedTemplates,
+          options: {
+            baseDirName: backendName,
+            ignoreNameInDir: true,
+          },
+        },
+        crossLayerProps
+      )
+    })
+
+    frontendNames.forEach(frontendName => {
+      log.info(`Writing templates to Frontend ${frontendName}`)
+      context.services[Namespace.templating].writeTemplates(
+        {
+          packageName: domainName,
+          templates: appliedTemplates,
+          options: {
+            baseDirName: frontendName,
+            ignoreNameInDir: true,
+          },
+        },
+        crossLayerProps
+      )
+    })
   }
+
   return {
     createDomain,
   }

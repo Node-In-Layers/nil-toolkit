@@ -39,8 +39,6 @@ const NodeInLayersContextProvider = ({ children }: { children: React.ReactNode }
 
   const _loadContext = async () => {
     const config = await getConfig()
-    console.log('Config')
-    console.log(config)
     const system = await loadSystem({
       environment: import.meta.env.MODE,
       config,

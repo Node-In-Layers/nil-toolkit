@@ -5,38 +5,65 @@ import { ServicesContext } from '@node-in-layers/core'
 import { ModelsServices } from './types.js'
 
 export const create = (context: ServicesContext): ModelsServices => {
-  const _getDomainDir = (domainName: string) =>
-    path.join(context.constants.workingDirectory, 'src', domainName)
-  const _getModelsDir = (domainName: string) =>
-    path.join(_getDomainDir(domainName), 'models')
+  const _getDomainDir = (sdkName: string, domainName: string) => {
+    return path.join(
+      context.constants.workingDirectory,
+      sdkName,
+      'src',
+      domainName
+    )
+  }
 
-  const doesDomainExist = ({ domainName }: { domainName: string }) => {
-    const dir = _getDomainDir(domainName)
+  const _getModelsDir = (sdkName: string, domainName: string) =>
+    path.join(_getDomainDir(sdkName, domainName), 'models')
+
+  const doesDomainExist = ({
+    sdkName,
+    domainName,
+  }: {
+    sdkName: string
+    domainName: string
+  }) => {
+    const dir = _getDomainDir(sdkName, domainName)
     return fs.existsSync(dir) && fs.lstatSync(dir).isDirectory()
   }
 
-  const ensureModelsDirectory = ({ domainName }: { domainName: string }) => {
-    const dir = _getModelsDir(domainName)
+  const ensureModelsDirectory = ({
+    sdkName,
+    domainName,
+  }: {
+    sdkName: string
+    domainName: string
+  }) => {
+    const dir = _getModelsDir(sdkName, domainName)
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true })
     }
   }
 
-  const ensureModelsIndex = ({ domainName }: { domainName: string }) => {
-    const idx = path.join(_getModelsDir(domainName), 'index.ts')
+  const ensureModelsIndex = ({
+    sdkName,
+    domainName,
+  }: {
+    sdkName: string
+    domainName: string
+  }) => {
+    const idx = path.join(_getModelsDir(sdkName, domainName), 'index.ts')
     if (!fs.existsSync(idx)) {
       fs.writeFileSync(idx, '\n')
     }
   }
 
   const exportModelInIndex = ({
+    sdkName,
     domainName,
     pluralTitle,
   }: {
+    sdkName: string
     domainName: string
     pluralTitle: string
   }) => {
-    const idx = path.join(_getModelsDir(domainName), 'index.ts')
+    const idx = path.join(_getModelsDir(sdkName, domainName), 'index.ts')
     const line = `export * as ${pluralTitle} from './${pluralTitle}.js'\n`
     const existing = fs.readFileSync(idx, 'utf-8')
     if (!existing.includes(line.trim())) {
@@ -45,50 +72,68 @@ export const create = (context: ServicesContext): ModelsServices => {
   }
 
   const doesModelExist = ({
+    sdkName,
     domainName,
     pluralTitle,
   }: {
+    sdkName: string
     domainName: string
     pluralTitle: string
   }) => {
-    const filePath = path.join(_getModelsDir(domainName), `${pluralTitle}.ts`)
+    const filePath = path.join(
+      _getModelsDir(sdkName, domainName),
+      `${pluralTitle}.ts`
+    )
     return fs.existsSync(filePath)
   }
 
   const writeModelFile = ({
+    sdkName,
     domainName,
     pluralTitle,
     source,
   }: {
+    sdkName: string
     domainName: string
     pluralTitle: string
     source: string
   }) => {
-    const filePath = path.join(_getModelsDir(domainName), `${pluralTitle}.ts`)
+    const filePath = path.join(
+      _getModelsDir(sdkName, domainName),
+      `${pluralTitle}.ts`
+    )
     fs.writeFileSync(filePath, source)
   }
 
-  const ensureTypesFile = ({ domainName }: { domainName: string }) => {
-    const typesPath = path.join(_getDomainDir(domainName), 'types.ts')
+  const ensureTypesFile = ({
+    sdkName,
+    domainName,
+  }: {
+    sdkName: string
+    domainName: string
+  }) => {
+    const typesPath = path.join(_getDomainDir(sdkName, domainName), 'types.ts')
     if (!fs.existsSync(typesPath)) {
       fs.writeFileSync(typesPath, '')
     }
   }
 
   const addTypeIfMissing = ({
+    sdkName,
     domainName,
     singularName,
     primaryKeyName,
     includeCreatedAt,
     includeUpdatedAt,
   }: {
+    sdkName: string
     domainName: string
     singularName: string
     primaryKeyName: string
     includeCreatedAt: boolean
     includeUpdatedAt: boolean
   }) => {
-    const typesPath = path.join(_getDomainDir(domainName), 'types.ts')
+    const typesPath = path.join(_getDomainDir(sdkName, domainName), 'types.ts')
     const content = fs.readFileSync(typesPath, 'utf-8')
     const typeName = singularName
     const signature = `export type ${typeName} =`

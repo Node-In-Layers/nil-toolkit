@@ -8,8 +8,11 @@ import { BackendServices } from './types.js'
 export const create = (
   context: ServicesContext<Config, WorkspaceServicesLayer>
 ): BackendServices => {
-  const isSystemRoot = async (crossLayerProps?: CrossLayerProps) =>
-    context.services[Namespace.workspace].isSystemRoot(crossLayerProps)
+  const isSystemRoot = async (
+    props?: { inPath?: string },
+    crossLayerProps?: CrossLayerProps
+  ) =>
+    context.services[Namespace.workspace].isSystemRoot(props, crossLayerProps)
 
   const doesBackendAlreadyExist = (props: {
     backendName: string

@@ -33,8 +33,14 @@ export const create = (
       throw new Error('sdkName is required')
     }
 
-    const inRoot =
-      await context.services[Namespace.backend].isSystemRoot(crossLayerProps)
+    const basePath = props.rootDirName
+      ? path.join(context.constants.workingDirectory, props.rootDirName)
+      : context.constants.workingDirectory
+
+    const inRoot = await context.services[Namespace.backend].isSystemRoot(
+      { inPath: basePath },
+      crossLayerProps
+    )
     if (!inRoot) {
       throw new Error(
         `Must be executed in a Node In Layers system root (directory containing nil.system.json).`
@@ -43,7 +49,7 @@ export const create = (
 
     const systemNameRaw = await context.services[
       Namespace.workspace
-    ].getSystemName({}, crossLayerProps)
+    ].getSystemName({ inPath: basePath }, crossLayerProps)
     const systemName = systemNameRaw.startsWith('@')
       ? systemNameRaw
       : `@${systemNameRaw}`
@@ -132,6 +138,12 @@ export const create = (
         templates: appliedTemplates,
         options: { baseDirName: props.rootDirName },
       },
+      crossLayerProps
+    )
+
+    log.info('Adding Backend Name')
+    await context.services[Namespace.workspace].addBackendName(
+      { inPath: basePath, backendName },
       crossLayerProps
     )
 

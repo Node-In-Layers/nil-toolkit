@@ -8,54 +8,42 @@ export type CreateModelProps = Readonly<{
 
 export type ModelsServices = Readonly<{
   doesDomainExist: LayerFunction<
-    ({ domainName }: { domainName: string }) => boolean
+    (props: { sdkName: string; domainName: string }) => boolean
   >
   doesModelExist: LayerFunction<
-    ({
-      domainName,
-      pluralTitle,
-    }: {
+    (props: {
+      sdkName: string
       domainName: string
       pluralTitle: string
     }) => boolean
   >
   ensureModelsDirectory: LayerFunction<
-    ({ domainName }: { domainName: string }) => void
+    (props: { sdkName: string; domainName: string }) => void
   >
   ensureModelsIndex: LayerFunction<
-    ({ domainName }: { domainName: string }) => void
+    (props: { sdkName: string; domainName: string }) => void
   >
   exportModelInIndex: LayerFunction<
-    ({
-      domainName,
-      pluralTitle,
-    }: {
+    (props: {
+      sdkName: string
       domainName: string
       pluralTitle: string
     }) => void
   >
   writeModelFile: LayerFunction<
-    ({
-      domainName,
-      pluralTitle,
-      source,
-    }: {
+    (props: {
+      sdkName: string
       domainName: string
       pluralTitle: string
       source: string
     }) => void
   >
   ensureTypesFile: LayerFunction<
-    ({ domainName }: { domainName: string }) => void
+    (props: { sdkName: string; domainName: string }) => void
   >
   addTypeIfMissing: LayerFunction<
-    ({
-      domainName,
-      singularName,
-      primaryKeyName,
-      includeCreatedAt,
-      includeUpdatedAt,
-    }: {
+    (props: {
+      sdkName: string
       domainName: string
       singularName: string
       primaryKeyName: string

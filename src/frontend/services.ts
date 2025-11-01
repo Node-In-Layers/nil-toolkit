@@ -8,8 +8,11 @@ import { FrontendServices } from './types.js'
 export const create = (
   context: ServicesContext<Config, WorkspaceServicesLayer>
 ): FrontendServices => {
-  const isSystemRoot = async (crossLayerProps?: CrossLayerProps) =>
-    context.services[Namespace.workspace].isSystemRoot(crossLayerProps)
+  const isSystemRoot = async (
+    props?: { inPath?: string },
+    crossLayerProps?: CrossLayerProps
+  ) =>
+    context.services[Namespace.workspace].isSystemRoot(props, crossLayerProps)
 
   const doesFrontendAlreadyExist = (props: {
     frontendName: string

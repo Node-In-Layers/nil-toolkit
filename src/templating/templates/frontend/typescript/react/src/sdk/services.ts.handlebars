@@ -26,7 +26,6 @@ export const create = (context: ServicesContext<AppConfig>): SdkServices => {
       } : {}),
     }))
     const client = await createClient(clientConfig)
-    console.log(client)
     return client
   }
   return {

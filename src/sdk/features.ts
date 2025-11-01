@@ -29,19 +29,21 @@ export const create = (
       throw new Error('packageType is required (e.g., typescript)')
     }
 
+    const basePath = props.rootDirName
+      ? path.join(context.constants.workingDirectory, props.rootDirName)
+      : context.constants.workingDirectory
+
     if (!props.rootDirName) {
-      const inRoot =
-        await context.services[Namespace.sdk].isSystemRoot(crossLayerProps)
+      const inRoot = await context.services[Namespace.sdk].isSystemRoot(
+        { inPath: basePath },
+        crossLayerProps
+      )
       if (!inRoot) {
         throw new Error(
           `Must be executed in a Node In Layers system root (directory containing nil.system.json).`
         )
       }
     }
-
-    const basePath = props.rootDirName
-      ? path.join(context.constants.workingDirectory, props.rootDirName)
-      : context.constants.workingDirectory
 
     const systemNameRaw = await context.services[
       Namespace.workspace
@@ -123,6 +125,12 @@ export const create = (
         templates: appliedTemplates,
         options: { baseDirName: props.rootDirName },
       },
+      crossLayerProps
+    )
+
+    log.info('Setting SDK Name')
+    await context.services[Namespace.workspace].setSdkName(
+      { sdkName, inPath: basePath },
       crossLayerProps
     )
 

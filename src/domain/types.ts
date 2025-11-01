@@ -3,12 +3,12 @@ import { PackageType } from '../templating/types.js'
 import { Namespace } from '../types.js'
 
 export type DomainServices = Readonly<{
-  isPackageRoot: LayerFunction<() => Promise<boolean>>
   doesDomainAlreadyExist: LayerFunction<
-    ({ domainName }: { domainName: string }) => boolean
+    (props: { sdkName: string; domainName: string }) => boolean
   >
-  getPackageName: LayerFunction<() => Promise<string>>
-  getPackageType: LayerFunction<() => Promise<PackageType>>
+  getPackageType: LayerFunction<
+    ({ sdkName }: { sdkName: string }) => Promise<PackageType>
+  >
 }>
 
 export type DomainServicesLayer = Readonly<{
@@ -17,7 +17,12 @@ export type DomainServicesLayer = Readonly<{
 
 export type DomainFeatures = Readonly<{
   createDomain: LayerFunction<
-    ({ domainName }: { domainName: string }) => Promise<void>
+    ({
+      domainName,
+    }: {
+      domainName: string
+      rootDirName?: string
+    }) => Promise<void>
   >
 }>
 
