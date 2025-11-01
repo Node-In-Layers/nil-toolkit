@@ -11,7 +11,7 @@
     "build:prod": "tsc -p tsconfig.node.prod.json && VITE_ENVIRONMENT=prod vite build --config vite.prod.config.ts && cp -R ./src/.well-known ./dist/.well-known && cp ./staticwebapp.config.json ./dist/staticwebapp.config.json",
     "build:watch": "nodemon --watch src --ext ts,tsx,js,jsx --exec \"vite build\"",
     "commit": "cz",
-    "dev": "vite --config vite.local.config.ts",
+    "local": "vite --config vite.local.config.ts",
     "eslint": "eslint .",
     "prettier": "prettier --write .",
     "shell": "tsx ./bin/shell.mts",
