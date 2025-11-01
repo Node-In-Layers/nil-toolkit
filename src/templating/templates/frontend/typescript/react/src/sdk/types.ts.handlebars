@@ -1,0 +1,10 @@
+import { Client } from '{{fullSdkPackageName}}'
+
+export type SdkServices = Readonly<{
+  getClient: LayerFunction<() => Promise<Client>>
+  isAuthenticated: LayerFunction<() => boolean>
+}>
+
+export type SdkServicesLayer = Readonly<{
+  sdk: SdkServices
+}>

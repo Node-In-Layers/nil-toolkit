@@ -125,12 +125,13 @@ const _parseArguments = () => {
     help: 'Name of the frontend',
   })
   createFrontendParser.add_argument('-w', '--framework', {
-    required: true,
     help: 'react',
+    default: 'react',
   })
-  createFrontendParser.add_argument('-s', '--sdk', {
-    required: true,
+  createFrontendParser.add_argument('-s', '--sdk-name', {
     help: 'SDK name to depend on',
+    default: 'sdk',
+    dest: 'sdkName',
   })
 
   const args = parser.parse_args()

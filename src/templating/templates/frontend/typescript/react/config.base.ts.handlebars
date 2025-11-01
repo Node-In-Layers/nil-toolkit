@@ -6,6 +6,7 @@ import {
   LogLevelNames,
 } from '@node-in-layers/core/index.js'
 import type { LocalConfig } from './src/types.js'
+import { McpClientNamespace } from '@node-in-layers/mcp-client'
 
 export default (): LocalConfig => ({
   systemName: '{{systemName}}',
@@ -18,5 +19,15 @@ export default (): LocalConfig => ({
       logLevel: LogLevelNames.warn,
       logFormat: LogFormat.json,
     },
+  },
+  useOAuth2: false,
+  [McpClientNamespace.client]: {
+    mcp: {
+      stateless: true,
+      connection: {
+        type: 'http',
+        url: 'http://localhost:3000',
+      }
+    }
   },
 })

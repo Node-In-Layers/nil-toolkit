@@ -14,7 +14,9 @@ export const getConfig = memoizeValue(async () => {
     [CoreNamespace.root]: {
       apps: await Promise.all([
         import(`./nil/index.js`),
+        import(`./sdk/index.js`),
         import(`./home/index.js`),
+        import(`./health/index.js`),
       ]),
     },
   }) as AppConfig

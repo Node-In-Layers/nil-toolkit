@@ -44,6 +44,12 @@ const applyTemplates = (
     ..._getProperty('frontendName', (data as any).frontendName),
   }
   return templates.map(t => {
+    if (t.relativePath.includes('handlebars') === false) {
+      return {
+        relativePath: t.relativePath,
+        templatedData: t.sourceData,
+      }
+    }
     const fileTemplate = hb.compile(t.sourceData)
     const pathTemplate = hb.compile(t.relativePath)
     const templatedData = fileTemplate(templateData)

@@ -11,6 +11,7 @@ export type SdkBasicConfig = Readonly<{
   name: string,
   environment: string,
   [McpClientNamespace.client]: {
+    isBackend: boolean,
     mcp: {
       connection: HttpConnection | SseConnection | CliConnection
     }

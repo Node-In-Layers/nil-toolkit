@@ -1,13 +1,15 @@
+import path from 'node:path'
 import { FeaturesContext, Config, CrossLayerProps } from '@node-in-layers/core'
 import { Namespace } from '../types.js'
 import { TemplatingServicesLayer } from '../templating/types.js'
 import { applyTemplates, createValidName } from '../templating/libs.js'
+import { PackageServicesLayer } from '../package/types.js'
 import { FrontendServicesLayer } from './types.js'
 
 export const create = (
   context: FeaturesContext<
     Config,
-    FrontendServicesLayer & TemplatingServicesLayer
+    FrontendServicesLayer & TemplatingServicesLayer & PackageServicesLayer
   >
 ) => {
   const createFrontend = async (
@@ -48,6 +50,9 @@ export const create = (
 
     const frontendName = createValidName(props.frontendName || 'frontend')
     const fullFrontendPackageName = `${systemName}/${frontendName}`
+    const fullPath = props.rootDirName
+      ? path.join(props.rootDirName, frontendName)
+      : frontendName
 
     const alreadyExists = context.services[
       Namespace.frontend
@@ -72,6 +77,21 @@ export const create = (
       nodeInLayersCoreVersion: await context.services[
         Namespace.templating
       ].getDependencyVersion({ key: '@node-in-layers/core' }, crossLayerProps),
+      nodeInLayersMcpClientVersion: await context.services[
+        Namespace.templating
+      ].getDependencyVersion(
+        { key: '@node-in-layers/mcp-client' },
+        crossLayerProps
+      ),
+      functionalModelsOrmMcpVersion: await context.services[
+        Namespace.templating
+      ].getDependencyVersion(
+        { key: 'functional-models-orm-mcp' },
+        crossLayerProps
+      ),
+      functionalModelsVersion: await context.services[
+        Namespace.templating
+      ].getDependencyVersion({ key: 'functional-models' }, crossLayerProps),
     }
     const data = {
       versions,
@@ -80,6 +100,7 @@ export const create = (
       fullFrontendPackageName,
       framework,
       sdkName: props.sdkName || 'sdk',
+      fullSdkPackageName: `${systemName}/${props.sdkName}`,
     }
     const appliedTemplates = applyTemplates(templates, data)
     log.info('Writing templates')
@@ -91,6 +112,24 @@ export const create = (
       },
       crossLayerProps
     )
+
+    log.info('Running NPM Install')
+    context.services[Namespace.package].executeNpm(
+      { packageName: fullPath, command: 'install' },
+      crossLayerProps
+    )
+    log.info('Running NPM Eslint')
+    context.services[Namespace.package].executeNpm(
+      { packageName: fullPath, command: 'run eslint' },
+      crossLayerProps
+    )
+    log.info('Running NPM Prettier')
+    context.services[Namespace.package].executeNpm(
+      { packageName: fullPath, command: 'run prettier' },
+      crossLayerProps
+    )
+
+    log.info('Operation complete')
   }
 
   return { createFrontend }

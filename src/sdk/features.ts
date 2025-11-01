@@ -52,6 +52,9 @@ export const create = (
 
     const sdkName = createValidName(props.sdkName)
     const fullSdkPackageName = `${systemName}/${sdkName}`
+    const fullPath = props.rootDirName
+      ? path.join(props.rootDirName, sdkName)
+      : sdkName
 
     const alreadyExists = context.services[Namespace.sdk].doesSdkAlreadyExist(
       {
@@ -126,7 +129,7 @@ export const create = (
     log.info('Running NPM Install')
     context.services[Namespace.package].executeBashCommand(
       {
-        packageName: sdkName,
+        packageName: fullPath,
         command: 'npm install',
       },
       crossLayerProps
@@ -134,7 +137,7 @@ export const create = (
     log.info('Running NPM Build')
     context.services[Namespace.package].executeBashCommand(
       {
-        packageName: sdkName,
+        packageName: fullPath,
         command: 'npm run build',
       },
       crossLayerProps
@@ -142,7 +145,7 @@ export const create = (
     log.info('Running NPM Prettier')
     context.services[Namespace.package].executeBashCommand(
       {
-        packageName: sdkName,
+        packageName: fullPath,
         command: 'npm run prettier',
       },
       crossLayerProps
@@ -150,7 +153,7 @@ export const create = (
     log.info('Running NPM Eslint')
     context.services[Namespace.package].executeBashCommand(
       {
-        packageName: sdkName,
+        packageName: fullPath,
         command: 'npm run eslint',
       },
       crossLayerProps

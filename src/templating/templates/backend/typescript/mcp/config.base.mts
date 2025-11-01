@@ -51,7 +51,7 @@ export default async (): Promise<SystemConfig> => {
         connection: {
           type: 'http',
           url: 'http://localhost',
-          port: 5001,
+          port: 3000,
         } as HttpConnection,
       },
     },

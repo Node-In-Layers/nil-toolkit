@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { FeaturesContext, Config, CrossLayerProps } from '@node-in-layers/core'
 import { Namespace } from '../types.js'
 import { TemplatingServicesLayer } from '../templating/types.js'
@@ -51,6 +52,9 @@ export const create = (
     const fullBackendPackageName = `${systemName}/${backendName}`
     const sdkName = createValidName(props.sdkName || 'sdk')
     const fullSdkPackageName = `${systemName}/${sdkName}`
+    const fullPath = props.rootDirName
+      ? path.join(props.rootDirName, backendName)
+      : backendName
 
     const alreadyExists = context.services[
       Namespace.backend
@@ -134,7 +138,7 @@ export const create = (
     log.info('Running NPM Install')
     context.services[Namespace.package].executeBashCommand(
       {
-        packageName: backendName,
+        packageName: fullPath,
         command: 'npm install',
       },
       crossLayerProps
@@ -142,7 +146,7 @@ export const create = (
     log.info('Running NPM Build')
     context.services[Namespace.package].executeBashCommand(
       {
-        packageName: backendName,
+        packageName: fullPath,
         command: 'npm run build',
       },
       crossLayerProps
@@ -150,7 +154,7 @@ export const create = (
     log.info('Running NPM Prettier')
     context.services[Namespace.package].executeBashCommand(
       {
-        packageName: backendName,
+        packageName: fullPath,
         command: 'npm run prettier',
       },
       crossLayerProps
@@ -158,7 +162,7 @@ export const create = (
     log.info('Running NPM Eslint')
     context.services[Namespace.package].executeBashCommand(
       {
-        packageName: backendName,
+        packageName: fullPath,
         command: 'npm run eslint',
       },
       crossLayerProps

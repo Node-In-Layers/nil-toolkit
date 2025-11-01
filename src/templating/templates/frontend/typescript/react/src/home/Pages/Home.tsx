@@ -1,6 +1,7 @@
 import React from 'react'
 import { CoreNamespace } from '@node-in-layers/core'
 import { useNodeInLayersContext } from '../../nil/NodeInLayersContext.tsx'
+import HealthStatus from '../../health/Components/HealthStatus.tsx'
 
 const Home = () => {
   const nilContext = useNodeInLayersContext()
@@ -116,6 +117,10 @@ const Home = () => {
             <a href='https://github.com/Node-In-Layers/nil-core' target='_blank' rel='noreferrer' style={buttonPrimaryStyle}>GitHub (Core)</a>
           </div>
         </header>
+        <h1>
+          Status of Your Backend System
+        </h1>
+        <HealthStatus />
         <section style={cardSectionStyle}>
           <h2 style={sectionTitleStyle}>How to update the system</h2>
           <ol style={listPaddedStyle}>

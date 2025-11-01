@@ -7,7 +7,7 @@ import merge from 'lodash/merge.js'
 import { CoreNamespace, loadSystem, Config } from '@node-in-layers/core'
 import { McpClientNamespace } from '@node-in-layers/mcp-client'
 import { ArgumentParser } from 'argparse'
-import { create as createClientEntries } from '../src/client/entries.js'
+import { createClient } from '../src/client/entries.js'
 import { create as createConfig } from '../src/config.js'
 const _parseArguments = () => {
   const parser = new ArgumentParser({
@@ -34,7 +34,7 @@ const _loadConfig = async (environment: string) => {
 const main = async () => {
   const args = _parseArguments()
   const config = await _loadConfig(args.environment)
-  const client = await createClientEntries().createClient(config)
+  const client = await createClient(config)
   const func = get(client, args.dotPath)
   if (!func) {
     console.error('Function not found')

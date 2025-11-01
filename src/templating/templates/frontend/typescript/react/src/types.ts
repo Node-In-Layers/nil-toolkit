@@ -1,4 +1,7 @@
 import { Config, CoreNamespace } from '@node-in-layers/core'
+import { McpClientNamespace } from '@node-in-layers/mcp-client'
+import type { HttpConnection, SseConnection, CliConnection } from '@l4t/mcp-ai'
+import type { OAuth2Config } from 'functional-models-orm-mcp'
 
 type OmitNested<T, K1 extends keyof T, K2 extends keyof T[K1]> = Omit<T, K1> & {
   [P in K1]: Omit<T[K1], K2>
@@ -10,8 +13,18 @@ type OmitNested<T, K1 extends keyof T, K2 extends keyof T[K1]> = Omit<T, K1> & {
  */
 export type LocalConfig = OmitNested<Config, CoreNamespace.root, 'apps'> &
   Readonly<{
-    environment: string 
-  }>
+  useOAuth2?: boolean,
+  [McpClientNamespace.client]: {
+    mcp: {
+      connection: HttpConnection | SseConnection | CliConnection
+    }
+    credentials?: {
+      header?: string
+      key?: string
+      formatter?: (key: string) => string
+    }
+    oauth2?: OAuth2Config
+  }}>
 
 /**
  * The actual application's configuration. Use this throughout the system.

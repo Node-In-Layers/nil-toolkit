@@ -66,7 +66,7 @@ export const create = (
     await context.features[Namespace.backend].createBackend(
       {
         backendName: props.backendName,
-        type: props.backendType,
+        type: props.backendType || 'mcp',
         sdkName: props.sdkName,
         packageType: systemLanguage,
         rootDirName: systemName,

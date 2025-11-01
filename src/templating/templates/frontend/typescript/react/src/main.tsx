@@ -8,6 +8,7 @@ import MainLayout from "./Layouts/MainLayout.js"
 import {ThemeProvider} from "@mui/material"
 import { theme } from './theme.js'
 
+console.log("Testing")
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
