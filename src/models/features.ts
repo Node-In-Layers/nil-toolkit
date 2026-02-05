@@ -32,10 +32,20 @@ export const create = (
       crossLayerProps
     )
 
-    if (!systemJson?.sdkName) {
+    const isPackage =
+      typeof (systemJson as { isPackage?: boolean }).isPackage === 'boolean'
+        ? (systemJson as { isPackage?: boolean }).isPackage === true
+        : false
+
+    if (!isPackage && !systemJson?.sdkName) {
       throw new Error('SDK name not found')
     }
-    const sdkName = systemJson.sdkName
+
+    // For packages, we treat ./src as the SDK root. The models services
+    // construct paths as <wd>/<sdkName>/src/<domainName>/..., so using "."
+    // here makes that resolve to <wd>/src/<domainName>/..., which is what
+    // we want for single-package SDKs.
+    const sdkName = isPackage ? '.' : (systemJson.sdkName as string)
 
     log.info('Validating domain exists')
     if (!services.doesDomainExist({ sdkName, domainName }, crossLayerProps)) {

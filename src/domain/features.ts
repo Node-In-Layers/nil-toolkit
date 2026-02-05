@@ -51,14 +51,22 @@ export const create = (
     const systemJson = await context.services[
       Namespace.workspace
     ].getSystemJson({ inPath: basePath }, crossLayerProps)
-    if (!systemJson?.sdkName) {
+
+    const isPackage =
+      typeof (systemJson as { isPackage?: boolean }).isPackage === 'boolean'
+        ? (systemJson as { isPackage?: boolean }).isPackage === true
+        : false
+
+    if (!isPackage && !systemJson?.sdkName) {
       throw new Error('SDK name not found')
     }
+
+    const sdkNameForDomain = isPackage ? '.' : (systemJson.sdkName as string)
 
     log.debug('Checking if package exists.')
     if (
       ourServices.doesDomainAlreadyExist(
-        { sdkName: systemJson.sdkName, domainName },
+        { sdkName: sdkNameForDomain, domainName },
         crossLayerProps
       )
     ) {
@@ -67,7 +75,7 @@ export const create = (
 
     log.info('Getting package type')
     const packageType = await ourServices.getPackageType(
-      { sdkName: systemJson.sdkName },
+      { sdkName: sdkNameForDomain },
       crossLayerProps
     )
     log.info(`Package Type if ${packageType}`)
@@ -86,13 +94,31 @@ export const create = (
     }
     const appliedTemplates = applyTemplates(templates, data)
 
+    log.info('Writing templates')
+    if (isPackage) {
+      // For packages, rely on the template relative paths (which already
+      // include "src/DOMAIN_NAME/...") and write directly under the package
+      // root without adding an extra "src" or domain directory prefix.
+      context.services[Namespace.templating].writeTemplates(
+        {
+          packageName: domainName,
+          templates: appliedTemplates,
+          options: {
+            ignoreNameInDir: true,
+          },
+        },
+        crossLayerProps
+      )
+      return
+    }
+
     log.info('Writing templates to SDK')
     context.services[Namespace.templating].writeTemplates(
       {
         packageName: domainName,
         templates: appliedTemplates,
         options: {
-          baseDirName: systemJson.sdkName,
+          baseDirName: systemJson.sdkName as string,
           ignoreNameInDir: true,
         },
       },

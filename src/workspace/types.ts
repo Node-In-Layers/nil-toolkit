@@ -8,6 +8,12 @@ export type SystemJson = Readonly<{
   sdkName?: string
   backends?: string[]
   frontends?: string[]
+  /**
+   * When true, this nil.system.json represents a single SDK package
+   * (e.g. a library) rather than a full multi-package system.
+   * In this case the SDK is assumed to live at ./src.
+   */
+  isPackage?: boolean
 }>
 
 export type WorkspaceServices = Readonly<{

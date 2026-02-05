@@ -1,6 +1,5 @@
 import fs from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import path, { dirname } from 'node:path'
+import path from 'node:path'
 import {
   Config,
   CrossLayerProps,
@@ -10,9 +9,6 @@ import { Namespace } from '../types.js'
 import { WorkspaceServicesLayer } from '../workspace/types.js'
 import { DomainServices } from './types.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
 export const create = (
   context: ServicesContext<Config, WorkspaceServicesLayer>
 ): DomainServices => {
@@ -20,8 +16,13 @@ export const create = (
     sdkName: string
     domainName: string
   }) => {
-    const dirPath = path.join(__dirname, props.sdkName, props.domainName)
-    return fs.existsSync(dirPath)
+    const dirPath = path.join(
+      context.constants.workingDirectory,
+      props.sdkName,
+      'src',
+      props.domainName
+    )
+    return fs.existsSync(dirPath) && fs.lstatSync(dirPath).isDirectory()
   }
   const getPackageType = async (
     props: { sdkName: string },
