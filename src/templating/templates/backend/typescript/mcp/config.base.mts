@@ -1,11 +1,10 @@
-import { HttpConnection } from '@l4t/mcp-ai'
 import {
   CoreNamespace,
   LogFormat,
-} from '@node-in-layers/core/index.js'
-import { DataNamespace } from '@node-in-layers/data/index.js'
+} from '@node-in-layers/core'
+import { DataNamespace } from '@node-in-layers/data'
 import { LogLevelNames } from '@node-in-layers/core'
-import { McpNamespace } from '@node-in-layers/mcp-server'
+import { McpNamespace, HttpConnection } from '@node-in-layers/mcp-server'
 import { SystemConfig } from './src/types.js'
 
 export default async (): Promise<SystemConfig> => {

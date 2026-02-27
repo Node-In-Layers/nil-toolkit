@@ -97,9 +97,6 @@ export const create = (
         { key: '@node-in-layers/rest-client' },
         crossLayerProps
       ),
-      mcpAiVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion({ key: '@l4t/mcp-ai' }, crossLayerProps),
       functionalModelsOrmMcpVersion: await context.services[
         Namespace.templating
       ].getDependencyVersion(

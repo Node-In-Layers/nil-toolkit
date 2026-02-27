@@ -4,8 +4,7 @@ import {
   NextFunction,
 } from 'express'
 import { LayerContext } from '@node-in-layers/core'
-import { McpContext, McpNamespace } from '@node-in-layers/mcp-server'
-import { ExpressMiddleware, ExpressOptions } from '@l4t/mcp-ai'
+import { McpContext, McpNamespace, ExpressMiddleware, ExpressOptions } from '@node-in-layers/mcp-server'
 import { SystemConfig } from '../types.js'
 import { McpMcp } from './types.js'
 

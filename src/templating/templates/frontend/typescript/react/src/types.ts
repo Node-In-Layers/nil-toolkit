@@ -1,6 +1,5 @@
-import { Config, CoreNamespace } from '@node-in-layers/core'
-import { McpClientNamespace } from '@node-in-layers/mcp-client'
-import type { HttpConnection, SseConnection, CliConnection } from '@l4t/mcp-ai'
+import { XOR, Config, CoreNamespace } from '@node-in-layers/core'
+import { McpClientNamespace, HttpConnection, CliConnection } from '@node-in-layers/mcp-client'
 import type { OAuth2Config } from 'functional-models-orm-mcp'
 
 type OmitNested<T, K1 extends keyof T, K2 extends keyof T[K1]> = Omit<T, K1> & {
@@ -16,7 +15,7 @@ export type LocalConfig = OmitNested<Config, CoreNamespace.root, 'apps'> &
   useOAuth2?: boolean,
   [McpClientNamespace.client]: {
     mcp: {
-      connection: HttpConnection | SseConnection | CliConnection
+      connection: XOR<HttpConnection, CliConnection>
     }
     credentials?: {
       header?: string
