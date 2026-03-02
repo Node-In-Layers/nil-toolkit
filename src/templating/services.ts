@@ -15,11 +15,20 @@ const __dirname = dirname(__filename)
 
 export const create = (context: ServicesContext): TemplatingServices => {
   const _getToolkitPackageJsonPath = async (): Promise<string | undefined> => {
-    // Depending on if this is in a src or dist folder, this location will change.
-    const wd = path.join(__dirname, '../../package.json')
-    return (await glob.glob(wd, { ignore: '../node_modules/**' })).find(
-      p => fs.lstatSync(p).isFile() && p.endsWith('package.json')
-    )
+    // Check for package.json in the parent directory (deployed/dist structure)
+    // This avoids traversing up too far when deployed.
+    const deployedPath = path.join(__dirname, '../package.json')
+    if (fs.existsSync(deployedPath) && fs.lstatSync(deployedPath).isFile()) {
+      return deployedPath
+    }
+
+    // If not found, try two levels up (source structure)
+    const sourcePath = path.join(__dirname, '../../package.json')
+    if (fs.existsSync(sourcePath) && fs.lstatSync(sourcePath).isFile()) {
+      return sourcePath
+    }
+
+    return undefined
   }
 
   const getDependencyVersion = async (props: { key: string }) => {
