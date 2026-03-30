@@ -22,6 +22,7 @@ export type BackendFeatures = Readonly<{
       backendName: string
       type: 'mcp' | 'rest'
       sdkName: string
+      new?: boolean
       packageType: PackageType
       rootDirName?: string
     }) => Promise<void>

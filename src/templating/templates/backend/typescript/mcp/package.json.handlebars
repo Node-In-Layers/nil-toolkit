@@ -20,7 +20,9 @@
     "@node-in-layers/core": "{{nodeInLayersCoreVersion}}",
     "@node-in-layers/data": "{{nodeInLayersDataVersion}}",
     "@node-in-layers/mcp-server": "{{nodeInLayersMcpServerVersion}}",
+    {{#if includeSdkDependency}}
     "{{fullSdkPackageName}}": "../{{sdkName}}",
+    {{/if}}
     "argparse": "^2.0.1",
     "es-main": "^1.3.0",
     "express": "^5.1.0",

@@ -3,9 +3,58 @@ import * as glob from 'glob'
 import merge from 'lodash/merge.js'
 import { CrossLayerProps, ServicesContext } from '@node-in-layers/core/index.js'
 import { PackageType } from '../templating/types.js'
+import path from 'node:path'
+import { Namespace } from '../types.js'
 import { SystemJson, WorkspaceServices } from './types.js'
 
 export const create = (context: ServicesContext): WorkspaceServices => {
+  const ensureDirectory = async (
+    props: { inPath: string },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    crossLayerProps?: CrossLayerProps
+  ) => {
+    if (!props?.inPath) {
+      throw new Error('inPath is required')
+    }
+    if (!fs.existsSync(props.inPath)) {
+      fs.mkdirSync(props.inPath, { recursive: true })
+      return
+    }
+    if (!fs.lstatSync(props.inPath).isDirectory()) {
+      throw new Error(`${props.inPath} already exists and is not a directory`)
+    }
+  }
+
+  const writeSystemMarker = async (
+    props: { inPath: string; systemJson: SystemJson },
+    crossLayerProps?: CrossLayerProps
+  ) => {
+    if (!props?.inPath) {
+      throw new Error('inPath is required')
+    }
+    if (!props?.systemJson?.name) {
+      throw new Error('systemJson.name is required')
+    }
+    const markerData = [
+      {
+        relativePath: 'nil.system.json',
+        templatedData: JSON.stringify(props.systemJson, null, 2),
+      },
+    ]
+    const baseDirName = path.relative(
+      context.constants.workingDirectory,
+      props.inPath
+    )
+    context.services[Namespace.templating].writeTemplates(
+      {
+        packageName: '.',
+        templates: markerData as any,
+        options: { ignoreNameInDir: true, baseDirName },
+      },
+      crossLayerProps
+    )
+  }
+
   const getSystemMarker = async (
     props?: { inPath?: string },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -107,11 +156,11 @@ export const create = (context: ServicesContext): WorkspaceServices => {
     try {
       const json = JSON.parse(fs.readFileSync(marker, 'utf-8'))
       if (!json.name || typeof json.name !== 'string') {
-        throw new Error('Invalid nil.system.json: missing name')
+        throw new Error('Invalid nil system json: missing name')
       }
       return json.name as string
     } catch {
-      throw new Error('Failed to read nil.system.json')
+      throw new Error('Failed to read nil system json')
     }
   }
   const getSystemJson = async (props?: {
@@ -125,6 +174,8 @@ export const create = (context: ServicesContext): WorkspaceServices => {
   }
 
   return {
+    ensureDirectory,
+    writeSystemMarker,
     getSystemMarker,
     isSystemRoot,
     getPackageType,

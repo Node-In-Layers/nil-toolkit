@@ -3,10 +3,6 @@ import { Namespace } from '../types.js'
 import { PackageType } from '../templating/types.js'
 
 export type SystemServices = Readonly<{
-  ensureSystemDirectory: LayerFunction<(props: { systemName: string }) => void>
-  writeSystemMarker: LayerFunction<
-    (props: { systemName: string; description: string }) => void
-  >
   linkSdkInPackage: LayerFunction<
     (props: {
       systemName: string

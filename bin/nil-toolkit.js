@@ -113,6 +113,10 @@ const _parseArguments = () => {
     help: 'SDK name to depend on',
     default: 'sdk',
   })
+  createBackendParser.add_argument('-n', '--new', {
+    help: 'Create a new system root and scaffold the backend into it.',
+    action: 'store_true',
+  })
   createBackendParser.add_argument('-p', '--packageType', {
     default: 'typescript',
     help: 'typescript|esm',

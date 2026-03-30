@@ -17,6 +17,10 @@ export type SystemJson = Readonly<{
 }>
 
 export type WorkspaceServices = Readonly<{
+  ensureDirectory: LayerFunction<(props: { inPath: string }) => void>
+  writeSystemMarker: LayerFunction<
+    (props: { inPath: string; systemJson: SystemJson }) => void
+  >
   getSystemMarker: LayerFunction<
     (props?: { inPath?: string }) => Promise<string | undefined>
   >
