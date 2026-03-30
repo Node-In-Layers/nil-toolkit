@@ -24,7 +24,7 @@ const startServer = async (environment: string) => {
     // @ts-ignore
     `Starting MCP server on ${context.config[McpNamespace].server.connection.port}...`
   )
-  await context.mcp.mcp.start(context)
+  await context.mcp[McpNamespace].start(context)
 }
 
 if (esMain(import.meta)) {

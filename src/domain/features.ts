@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import path from 'node:path'
 import {
   FeaturesContext,
@@ -10,6 +11,22 @@ import { applyTemplates, createValidName } from '../templating/libs.js'
 import { WorkspaceServicesLayer } from '../workspace/types.js'
 import { TemplatingServicesLayer } from '../templating/types.js'
 import { DomainServicesLayer } from './types.js'
+
+const appendSdkIndexDomainExportsIfNeeded = (
+  props: Readonly<{ indexPath: string; domainName: string }>
+) => {
+  const { indexPath, domainName } = props
+  if (!fs.existsSync(indexPath)) {
+    return
+  }
+  const content = fs.readFileSync(indexPath, 'utf8')
+  const fromDomain = `from './${domainName}/index.js'`
+  if (content.includes(fromDomain)) {
+    return
+  }
+  const block = `\nexport * as ${domainName} from './${domainName}/index.js'\nexport * from './${domainName}/types.js'\n`
+  fs.appendFileSync(indexPath, block)
+}
 
 export const create = (
   context: FeaturesContext<
@@ -109,6 +126,10 @@ export const create = (
         },
         crossLayerProps
       )
+      appendSdkIndexDomainExportsIfNeeded({
+        indexPath: path.join(basePath, 'src', 'index.ts'),
+        domainName,
+      })
       return
     }
 
@@ -124,6 +145,13 @@ export const create = (
       },
       crossLayerProps
     )
+
+    if (sdkNameForDomain !== '.') {
+      appendSdkIndexDomainExportsIfNeeded({
+        indexPath: path.join(basePath, sdkNameForDomain, 'src', 'index.ts'),
+        domainName,
+      })
+    }
 
     const backendNames = systemJson.backends || []
     const frontendNames = systemJson.frontends || []

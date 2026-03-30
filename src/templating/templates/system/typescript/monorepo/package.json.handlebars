@@ -2,9 +2,9 @@
   "name": "{{systemName}}",
   "private": true,
   "workspaces": [
-    "sdk",
-    "backend"{{#if frontendName}},
-    "frontend"{{/if}}
+    "{{sdkName}}",
+    "{{backendName}}"{{#if frontendName}},
+    "{{frontendName}}"{{/if}}
   ],
   "scripts": {
     "bootstrap": "npm install",

@@ -45,6 +45,8 @@ const runCommand = async (objects, command, data) => {
   return invoke(objects, command, data)
 }
 
+const _delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 const main = async () => {
   const args = _parseArguments()
   const objects = { ...(await _systemStartup(args.environment)), queryBuilder }
@@ -58,7 +60,9 @@ const main = async () => {
       args.command,
       args.data ? JSON.parse(args.data) : []
     )
-    console.info(result)
+    console.info(JSON.stringify(result, null, 2))
+    await _delay(300)
+    await objects.services['@node-in-layers/data'].cleanup()
     process.exit()
     return
   }

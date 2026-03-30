@@ -1,6 +1,7 @@
 import merge from 'lodash/merge.js'
 import type { ClientBasicConfig } from '@node-in-layers/mcp-client'
 import { McpClientNamespace } from '@node-in-layers/mcp-client'
+import * as mcpDataDomain from '@node-in-layers/mcp-client/data/index.js'
 import * as mcpDomain from '@node-in-layers/mcp-client/mcp/index.js'
 import pkg from '../package.json' with { type: 'json' }
 import * as client from './client/index.js'
@@ -18,13 +19,14 @@ export const create = async (
     [McpClientNamespace.client]: {
       domains: [
         client,
+        mcpDataDomain,
         mcpDomain,
         health
       ],
       version: pkg.version,
       ...config[McpClientNamespace.client],
     }
-  }, config)
+  }, config) as ClientBasicConfig
 
   return clientConfig
 }

@@ -1,10 +1,9 @@
 import fs from 'node:fs'
+import path from 'node:path'
 import * as glob from 'glob'
 import merge from 'lodash/merge.js'
 import { CrossLayerProps, ServicesContext } from '@node-in-layers/core/index.js'
 import { PackageType } from '../templating/types.js'
-import path from 'node:path'
-import { Namespace } from '../types.js'
 import { SystemJson, WorkspaceServices } from './types.js'
 
 export const create = (context: ServicesContext): WorkspaceServices => {
@@ -27,7 +26,7 @@ export const create = (context: ServicesContext): WorkspaceServices => {
 
   const writeSystemMarker = async (
     props: { inPath: string; systemJson: SystemJson },
-    crossLayerProps?: CrossLayerProps
+    _crossLayerProps?: CrossLayerProps
   ) => {
     if (!props?.inPath) {
       throw new Error('inPath is required')
@@ -35,23 +34,11 @@ export const create = (context: ServicesContext): WorkspaceServices => {
     if (!props?.systemJson?.name) {
       throw new Error('systemJson.name is required')
     }
-    const markerData = [
-      {
-        relativePath: 'nil.system.json',
-        templatedData: JSON.stringify(props.systemJson, null, 2),
-      },
-    ]
-    const baseDirName = path.relative(
-      context.constants.workingDirectory,
-      props.inPath
-    )
-    context.services[Namespace.templating].writeTemplates(
-      {
-        packageName: '.',
-        templates: markerData as any,
-        options: { ignoreNameInDir: true, baseDirName },
-      },
-      crossLayerProps
+    const markerPath = path.join(props.inPath, 'nil.system.json')
+    fs.writeFileSync(
+      markerPath,
+      JSON.stringify(props.systemJson, null, 2),
+      'utf8'
     )
   }
 
@@ -118,9 +105,10 @@ export const create = (context: ServicesContext): WorkspaceServices => {
       throw new Error('nil.system.json not found in current directory')
     }
     const json = JSON.parse(fs.readFileSync(marker, 'utf-8'))
-    const newJson = json.backends
-      ? [...json.backends, props.backendName]
-      : [props.backendName]
+    const existing = Array.isArray(json.backends) ? json.backends : []
+    const newJson = existing.includes(props.backendName)
+      ? existing
+      : [...existing, props.backendName]
     const finalJson = merge(json, { backends: newJson })
     fs.writeFileSync(marker, JSON.stringify(finalJson, null, 2))
   }
@@ -137,9 +125,10 @@ export const create = (context: ServicesContext): WorkspaceServices => {
       throw new Error('nil.system.json not found in current directory')
     }
     const json = JSON.parse(fs.readFileSync(marker, 'utf-8'))
-    const newJson = json.frontends
-      ? [...json.frontends, props.frontendName]
-      : [props.frontendName]
+    const existing = Array.isArray(json.frontends) ? json.frontends : []
+    const newJson = existing.includes(props.frontendName)
+      ? existing
+      : [...existing, props.frontendName]
     const finalJson = merge(json, { frontends: newJson })
     fs.writeFileSync(marker, JSON.stringify(finalJson, null, 2))
   }

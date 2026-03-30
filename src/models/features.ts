@@ -156,6 +156,14 @@ export const create = (
       },
       crossLayerProps
     )
+    services.ensureSdkDomainModelsExport(
+      { domainName, systemJson },
+      crossLayerProps
+    )
+    services.ensureBackendDomainModelsExport(
+      { domainName, systemJson },
+      crossLayerProps
+    )
     log.info('Model created')
   }
 

@@ -110,8 +110,7 @@ const _parseArguments = () => {
     default: 'mcp',
   })
   createBackendParser.add_argument('-s', '--sdk-name', {
-    help: 'SDK name to depend on',
-    default: 'sdk',
+    help: 'SDK package name to depend on, or "." for none. Defaults to "." with --new, otherwise "sdk".',
   })
   createBackendParser.add_argument('-n', '--new', {
     help: 'Create a new system root and scaffold the backend into it.',

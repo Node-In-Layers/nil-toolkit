@@ -1,5 +1,6 @@
 import { LayerFunction } from '@node-in-layers/core'
 import { Namespace } from '../types.js'
+import type { SystemJson } from '../workspace/types.js'
 
 export type CreateModelProps = Readonly<{
   domainName: string
@@ -50,6 +51,12 @@ export type ModelsServices = Readonly<{
       includeCreatedAt: boolean
       includeUpdatedAt: boolean
     }) => void
+  >
+  ensureSdkDomainModelsExport: LayerFunction<
+    (props: { domainName: string; systemJson: SystemJson }) => void
+  >
+  ensureBackendDomainModelsExport: LayerFunction<
+    (props: { domainName: string; systemJson: SystemJson }) => void
   >
 }>
 

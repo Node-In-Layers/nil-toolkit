@@ -1,9 +1,13 @@
 import { annotatedFunction } from '@node-in-layers/core'
-import { GetHealthProps } from '{{fullSdkPackageName}}'
+{{#if includeSdkDependency}}
+import { getHealthProps } from '{{fullSdkPackageName}}'
 import { HealthFeatures } from './types.js'
+{{else}}
+import { getHealthProps, HealthFeatures } from './types.js'
+{{/if}}
 
 const create = (): HealthFeatures => {
-  const getHealth = annotatedFunction(GetHealthProps, async () => {
+  const getHealth = annotatedFunction(getHealthProps, async () => {
     return Promise.resolve({
       status: 'ok',
     })

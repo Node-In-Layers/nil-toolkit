@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { ServicesContext } from '@node-in-layers/core'
 
+import type { SystemJson } from '../workspace/types.js'
 import { ModelsServices } from './types.js'
 
 export const create = (context: ServicesContext): ModelsServices => {
@@ -153,6 +154,82 @@ export const create = (context: ServicesContext): ModelsServices => {
     fs.appendFileSync(typesPath, `${separator}${typeDef}`)
   }
 
+  const ensureSdkDomainModelsExport = (
+    props: Readonly<{ domainName: string; systemJson: SystemJson }>
+  ) => {
+    const { domainName, systemJson } = props
+    const sdkName = systemJson.sdkName ?? '.'
+    const idx = path.join(_getDomainDir(sdkName, domainName), 'index.ts')
+    if (!fs.existsSync(idx)) {
+      return
+    }
+    const marker = 'export * as models from'
+    const content = fs.readFileSync(idx, 'utf8')
+    if (content.includes(marker)) {
+      return
+    }
+    const line = `export * as models from './models/index.js'`
+    const needsNl = content.length > 0 && !content.endsWith('\n')
+    fs.appendFileSync(idx, `${needsNl ? '\n' : ''}${line}\n`)
+  }
+
+  const ensureBackendDomainModelsExport = (
+    props: Readonly<{ domainName: string; systemJson: SystemJson }>
+  ) => {
+    const { domainName, systemJson } = props
+    const backends: readonly string[] = systemJson.backends ?? []
+    const sdkName = systemJson.sdkName ?? '.'
+    const sdkDomainIndexPath = path.normalize(
+      path.join(_getDomainDir(sdkName, domainName), 'index.ts')
+    )
+    const fullSdkPackageName =
+      sdkName === '.'
+        ? ''
+        : (() => {
+            const raw = systemJson.name
+            const systemPrefix = raw.startsWith('@') ? raw : `@${raw}`
+            return `${systemPrefix}/${sdkName}`
+          })()
+
+    const backendOnlyBlock = `export * as models from './models/index.js'`
+    const sdkBackendBlock = `import { ${domainName} } from '${fullSdkPackageName}'\nexport const models = ${domainName}.models\n`
+
+    backends.reduce<void>((_, backendName) => {
+      const base = context.constants.workingDirectory
+      const backendRoot =
+        backendName === '.' ? base : path.join(base, backendName)
+      const idx = path.normalize(
+        path.join(backendRoot, 'src', domainName, 'index.ts')
+      )
+      if (!fs.existsSync(idx)) {
+        return undefined
+      }
+      if (sdkName === '.' && idx === sdkDomainIndexPath) {
+        return undefined
+      }
+      const content = fs.readFileSync(idx, 'utf8')
+      if (sdkName === '.') {
+        if (content.includes('export * as models from')) {
+          return undefined
+        }
+        const needsNl = content.length > 0 && !content.endsWith('\n')
+        fs.appendFileSync(idx, `${needsNl ? '\n' : ''}${backendOnlyBlock}\n`)
+        return undefined
+      }
+      if (
+        content.includes('export const models =') ||
+        content.includes(
+          `import { ${domainName} } from '${fullSdkPackageName}'`
+        )
+      ) {
+        return undefined
+      }
+      const needsNl = content.length > 0 && !content.endsWith('\n')
+      fs.appendFileSync(idx, `${needsNl ? '\n' : ''}${sdkBackendBlock}`)
+      return undefined
+    }, undefined)
+  }
+
   return {
     doesDomainExist,
     doesModelExist,
@@ -162,5 +239,7 @@ export const create = (context: ServicesContext): ModelsServices => {
     writeModelFile,
     ensureTypesFile,
     addTypeIfMissing,
+    ensureSdkDomainModelsExport,
+    ensureBackendDomainModelsExport,
   }
 }

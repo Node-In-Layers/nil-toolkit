@@ -1,6 +1,9 @@
+{{#if includeSdkDependency}}
 import { NilAnnotatedFunction } from '@node-in-layers/core'
 import { JsonObj } from 'functional-models'
 import { HealthCheckResponse } from '{{fullSdkPackageName}}'
+
+export type HealthServices = Readonly<object>
 
 export type HealthFeatures = Readonly<{
   getHealth: NilAnnotatedFunction<JsonObj, HealthCheckResponse>
@@ -9,3 +12,37 @@ export type HealthFeatures = Readonly<{
 export type HealthFeaturesLayer = Readonly<{
   health: HealthFeatures
 }>
+{{else}}
+import { JsonAble, JsonObj } from 'functional-models'
+import {
+  annotationFunctionProps,
+  NilAnnotatedFunction,
+} from '@node-in-layers/core'
+import { z } from 'zod'
+
+export type HealthCheckResponse = Readonly<{
+  status: string
+  details?: JsonAble
+}>
+
+export type HealthServices = Readonly<object>
+
+export const getHealthProps = annotationFunctionProps<
+  JsonObj,
+  HealthCheckResponse
+>({
+  functionName: 'getHealth',
+  domain: 'health',
+  description: 'Simple health check to see if the backend is reachable.',
+  args: z.object({}),
+  returns: z.object({ status: z.string(), details: z.any().optional() }),
+})
+
+export type HealthFeatures = Readonly<{
+  getHealth: NilAnnotatedFunction<JsonObj, HealthCheckResponse>
+}>
+
+export type HealthFeaturesLayer = Readonly<{
+  health: HealthFeatures
+}>
+{{/if}}

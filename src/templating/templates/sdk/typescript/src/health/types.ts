@@ -17,7 +17,7 @@ export type HealthServicesLayer = Readonly<{
   health: HealthServices
 }>
 
-export const GetHealthProps = annotationFunctionProps<
+export const getHealthProps = annotationFunctionProps<
   JsonObj,
   HealthCheckResponse
 >({
