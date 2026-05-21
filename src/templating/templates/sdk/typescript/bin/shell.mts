@@ -43,7 +43,7 @@ const main = async () => {
     environment: args.environment,
     config: merge({}, config, {
       [CoreNamespace.root]: {
-        apps: config[McpClientNamespace.client].domains,
+        domains: config[McpClientNamespace.client].domains,
       }
     }) as Config,
    })

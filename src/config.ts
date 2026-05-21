@@ -13,11 +13,10 @@ const create = async (options: {
     environment: 'prod',
     systemName: 'nil-toolkit',
     [CoreNamespace.root]: {
-      apps: [
+      domains: [
         await import('./workspace/index.js'),
         await import('./templating/index.js'),
         await import('./package/index.js'),
-        await import('./app/index.js'),
         await import('./domain/index.js'),
         await import('./sdk/index.js'),
         await import('./backend/index.js'),

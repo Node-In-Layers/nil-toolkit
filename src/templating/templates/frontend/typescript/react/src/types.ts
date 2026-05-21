@@ -10,7 +10,7 @@ type OmitNested<T, K1 extends keyof T, K2 extends keyof T[K1]> = Omit<T, K1> & {
  * The configuration that comes directly from the source code. (Much of the config
  * is provided elsewhere.)
  */
-export type LocalConfig = OmitNested<Config, CoreNamespace.root, 'apps'> &
+export type LocalConfig = OmitNested<Config, CoreNamespace.root, 'domains'> &
   Readonly<{
   useOAuth2?: boolean,
   [McpClientNamespace.client]: {
@@ -26,9 +26,9 @@ export type LocalConfig = OmitNested<Config, CoreNamespace.root, 'apps'> &
   }}>
 
 /**
- * The actual application's configuration. Use this throughout the system.
+ * The loaded system configuration. Use this throughout the frontend.
  */
-export type AppConfig = Config &
+export type SystemConfig = Config &
   LocalConfig & {
     // Insert custom configurations that happen in config.
   }

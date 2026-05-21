@@ -2,7 +2,7 @@ import { CoreNamespace } from '@node-in-layers/core/index.js'
 import { DataNamespace } from '@node-in-layers/data/index.js'
 
 const core = {
-  apps: await Promise.all([
+  domains: await Promise.all([
     import((`@node-in-layers/data/index.js`)),
     import((`./dist/{{systemName}}/index.js`)),
   ]),

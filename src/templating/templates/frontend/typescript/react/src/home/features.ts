@@ -1,10 +1,10 @@
 import { FeaturesContext } from '@node-in-layers/core'
-import { AppConfig } from '../types.js'
+import { SystemConfig } from '../types.js'
 import { HomeServicesLayer, HomeFeaturesLayer, HomeFeatures } from './types.js'
 
 const create = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  context: FeaturesContext<AppConfig, HomeServicesLayer, HomeFeaturesLayer>
+  context: FeaturesContext<SystemConfig, HomeServicesLayer, HomeFeaturesLayer>
 ) : HomeFeatures => {
   return {
   }

@@ -1,10 +1,10 @@
 import merge from 'lodash/merge.js'
 import { ServicesContext } from '@node-in-layers/core'
 import { SdkServices } from './types.js'
-import { AppConfig } from '../types.js'
+import { SystemConfig } from '../types.js'
 import { createClient, createConfig } from '{{fullSdkPackageName}}'
 
-export const create = (context: ServicesContext<AppConfig>): SdkServices => {
+export const create = (context: ServicesContext<SystemConfig>): SdkServices => {
   const isAuthenticated = () => context.config.useOAuth2 ? context.config.authUser?.access_token : true
   const getClient = async () => {
     // TODO: Adjust this to your authentication situation.

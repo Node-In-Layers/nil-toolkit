@@ -1,8 +1,8 @@
-import { AppConfig } from '../types.js'
+import { SystemConfig } from '../types.js'
 import { HomeFeaturesLayer, HomeServicesLayer } from '../home/types.js'
 
 export type SystemContext = {
-  config: AppConfig
+  config: SystemConfig
   services: HomeServicesLayer
   features: HomeFeaturesLayer
 }

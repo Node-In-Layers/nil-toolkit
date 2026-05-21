@@ -20,7 +20,7 @@ export default async (): Promise<SystemConfig> => {
     systemName: '{{backendName}}',
     [CoreNamespace.root]: {
       // @ts-ignore
-      apps: await Promise.all([
+      domains: await Promise.all([
         secretsCore,
         secretsConfig,
         data,

@@ -6,7 +6,7 @@ The official tool suite for working with Node In Layers systems.
 
 ## This is the best place to start with Node in Layers
 
-The nil-toolkit is the recommended way to create Node in Layer systems, as well as appending new modules to them.
+The nil-toolkit is the recommended way to create Node in Layer systems, as well as appending new domains to them.
 
 # How To Install
 

@@ -9,7 +9,7 @@ const Home = () => {
     return (<></>)
   }
 
-  const domains = (nilContext.config[CoreNamespace.root].apps ?? []).map((a: { name: string }) => a.name)
+  const domains = (nilContext.config[CoreNamespace.root].domains ?? []).map((a: { name: string }) => a.name)
   type LayerMap = Record<string, Record<string, unknown>>
   const featuresMap: LayerMap = (nilContext.features ?? {}) as unknown as LayerMap
   const servicesMap: LayerMap = (nilContext.services ?? {}) as unknown as LayerMap
@@ -125,7 +125,7 @@ const Home = () => {
           <h2 style={sectionTitleStyle}>How to update the system</h2>
           <ol style={listPaddedStyle}>
             <li style={listItemMarginStyle}>
-              Add new domains in <code>src/config.ts</code> by appending them to the <code>apps</code> list.
+              Add new domains in <code>src/config.ts</code> by appending them to the <code>domains</code> list.
             </li>
             <li style={listItemMarginStyle}>
               Use the hook <code>useNodeInLayersContext()</code> to access <code>config</code>, <code>features</code>, and <code>services</code> anywhere in the system.
