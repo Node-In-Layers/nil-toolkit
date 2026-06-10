@@ -2,7 +2,7 @@
 set -e
 
 rm -Rf ./dist
-tsc -p ./tsconfig.json
+tsgo -p ./tsconfig.json
 cp package.json ./dist
 cp README.md ./dist
 cp -R ./src/templating/templates ./dist/templating

@@ -22,6 +22,7 @@ const applyTemplates = (
     appName?: string
     systemName?: string
     domainName?: string
+    basicName?: string
     sdkName?: string
     apiName?: string
     frontendName?: string
@@ -39,6 +40,7 @@ const applyTemplates = (
     ..._getProperty('appName', (data as any).appName),
     ..._getProperty('systemName', (data as any).systemName),
     ..._getProperty('domainName', (data as any).domainName),
+    ..._getProperty('basicName', (data as any).basicName),
     ..._getProperty('sdkName', (data as any).sdkName),
     ..._getProperty('apiName', (data as any).apiName),
     ..._getProperty('frontendName', (data as any).frontendName),

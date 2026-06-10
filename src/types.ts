@@ -7,6 +7,7 @@ export enum Namespace {
   domain = '@node-in-layers/toolkit/domain',
   sdk = '@node-in-layers/toolkit/sdk',
   backend = '@node-in-layers/toolkit/backend',
+  basic = '@node-in-layers/toolkit/basic',
   frontend = '@node-in-layers/toolkit/frontend',
   workspace = '@node-in-layers/toolkit/workspace',
   templating = '@node-in-layers/toolkit/templating',

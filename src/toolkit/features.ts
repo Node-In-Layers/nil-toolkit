@@ -36,6 +36,7 @@ export const create = (
   const createBackend = promiseWrap(
     context.features[Namespace.backend].createBackend
   )
+  const createBasic = promiseWrap(context.features[Namespace.basic].createBasic)
   const createFrontend = promiseWrap(
     context.features[Namespace.frontend].createFrontend
   )
@@ -47,6 +48,7 @@ export const create = (
     createModel,
     createSdk,
     createBackend,
+    createBasic,
     createFrontend,
   }
 }

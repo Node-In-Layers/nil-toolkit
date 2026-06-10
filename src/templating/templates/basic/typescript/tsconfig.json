@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "lib": ["es2021", "dom", "es2015"],
+    "target": "es2022",
+    "lib": ["ES2023", "ESNext.Array", "es2021", "dom", "es2015"],
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "rootDir": "./src",
@@ -10,17 +10,20 @@
     "sourceMap": true,
     "outDir": "./dist",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": false,
-    "skipLibCheck": true,
-    "types": ["node"]
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "ts-node": {
+    "esm": true
   },
   "include": ["./src"],
   "exclude": [
+    "bin",
     "src/index.d.ts",
-    "src/templates",
-    "src/templating/templates",
     "node_modules",
     "dist",
     "features",

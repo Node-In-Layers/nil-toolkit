@@ -5,6 +5,11 @@ import {
 } from '@node-in-layers/core/index.js'
 import { Namespace } from '../types.js'
 import { applyTemplates, createValidName } from '../templating/libs.js'
+import {
+  buildTemplateVersions,
+  COMMON_DEV,
+  NIL_CORE,
+} from '../templating/dependencyVersions.js'
 import { TemplatingServicesLayer, PackageType } from '../templating/types.js'
 import { PackageServicesLayer } from './types.js'
 
@@ -46,10 +51,13 @@ export const create = (
     )
     const templates = generalTemplates.concat(specificTemplates)
     log.info(`Apply templates`)
+    const versions = await buildTemplateVersions(
+      context,
+      { include: [...NIL_CORE, 'handlebars', ...COMMON_DEV] },
+      crossLayerProps
+    )
     const data = {
-      nodeInLayersCoreVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion({ key: '@node-in-layers/core' }, crossLayerProps),
+      ...versions,
       packageName,
     }
     const appliedTemplates = applyTemplates(templates, data)

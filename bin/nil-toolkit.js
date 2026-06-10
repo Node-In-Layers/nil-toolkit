@@ -121,6 +121,21 @@ const _parseArguments = () => {
     help: 'typescript|esm',
   })
 
+  const createBasicParser = subParsers.add_parser('create-basic', {
+    help: 'Create a new basic Node In Layers executable package (core, data, secrets, shell). Useful for CLIs and small tools.',
+  })
+  createBasicParser.add_argument('basicName', {
+    help: 'Name of the basic package.',
+  })
+  createBasicParser.add_argument('-d', '--domain-name', {
+    help: 'Name of the starter domain under src/. Defaults to app.',
+    default: 'app',
+  })
+  createBasicParser.add_argument('-p', '--packageType', {
+    default: 'typescript',
+    help: 'typescript|esm',
+  })
+
   const createFrontendParser = subParsers.add_parser('create-frontend', {
     help: 'Create a new frontend package.',
   })

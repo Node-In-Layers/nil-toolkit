@@ -158,7 +158,7 @@ export default [
       'no-sequences': ['error'],
       'no-throw-literal': ['error'],
       'no-unmodified-loop-condition': ['error'],
-      'no-unused-expressions': ['error'],
+      'no-unused-expressions': 0,
       'no-useless-call': ['error'],
       'no-useless-concat': ['error'],
       'no-void': ['error'],
@@ -256,6 +256,9 @@ export default [
         project: [],
       },
     },
+    rules: {
+      'no-unused-expressions': ['error'],
+    },
   },
   {
     files: ['./src/*.ts', './src/**/*.ts'],
@@ -271,6 +274,16 @@ export default [
       },
     },
     rules: {
+      '@typescript-eslint/no-unused-expressions': [
+        'error',
+        {
+          allowShortCircuit: false,
+          allowTernary: false,
+          allowTaggedTemplates: false,
+          enforceForJSX: false,
+          ignoreDirectives: false,
+        },
+      ],
       '@typescript-eslint/no-unused-vars': [
         'error',
         {

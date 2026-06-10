@@ -3,27 +3,39 @@ import {
   LogFormat,
   LogLevelNames,
   CoreNamespace,
-} from '@node-in-layers/core/index.js'
+} from '@node-in-layers/core'
+import * as workspace from './workspace/index.js'
+import * as templating from './templating/index.js'
+import * as pkg from './package/index.js'
+import * as domain from './domain/index.js'
+import * as sdk from './sdk/index.js'
+import * as backend from './backend/index.js'
+import * as basic from './basic/index.js'
+import * as frontend from './frontend/index.js'
+import * as models from './models/index.js'
+import * as system from './system/index.js'
+import * as toolkit from './toolkit/index.js'
 
-const create = async (options: {
+export const create = (options: {
   logFormat?: LogFormat
   logLevel?: LogLevelNames
-}): Promise<Config> => {
-  return {
+}): Config => {
+  const config: Config = {
     environment: 'prod',
     systemName: 'nil-toolkit',
     [CoreNamespace.root]: {
       domains: [
-        await import('./workspace/index.js'),
-        await import('./templating/index.js'),
-        await import('./package/index.js'),
-        await import('./domain/index.js'),
-        await import('./sdk/index.js'),
-        await import('./backend/index.js'),
-        await import('./frontend/index.js'),
-        await import('./models/index.js'),
-        await import('./system/index.js'),
-        await import('./toolkit/index.js'),
+        workspace,
+        templating,
+        pkg,
+        domain,
+        sdk,
+        backend,
+        basic,
+        frontend,
+        models,
+        system,
+        toolkit,
       ],
       layerOrder: ['services', 'features'],
       logging: {
@@ -32,6 +44,5 @@ const create = async (options: {
       },
     },
   }
+  return config
 }
-
-export { create }

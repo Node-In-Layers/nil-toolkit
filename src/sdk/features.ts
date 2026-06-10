@@ -2,6 +2,11 @@ import path from 'node:path'
 import { FeaturesContext, Config, CrossLayerProps } from '@node-in-layers/core'
 import { PackageType, TemplatingServicesLayer } from '../templating/types.js'
 import { applyTemplates, createValidName } from '../templating/libs.js'
+import {
+  buildTemplateVersions,
+  COMMON_DEV,
+  NIL_SDK,
+} from '../templating/dependencyVersions.js'
 import { Namespace } from '../types.js'
 import { SdkServicesLayer } from './types.js'
 
@@ -81,34 +86,22 @@ export const create = (
         'REST SDK scaffolding is not implemented yet. Please use --transport mcp (default).'
       )
     }
-    const versions = {
-      nodeInLayersCoreVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion({ key: '@node-in-layers/core' }, crossLayerProps),
-      nodeInLayersMcpClientVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion(
-        { key: '@node-in-layers/mcp-client' },
-        crossLayerProps
-      ),
-      nodeInLayersRestClientVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion(
-        { key: '@node-in-layers/rest-client' },
-        crossLayerProps
-      ),
-      functionalModelsOrmMcpVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion(
-        { key: 'functional-models-orm-mcp' },
-        crossLayerProps
-      ),
-      functionalModelsVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion({ key: 'functional-models' }, crossLayerProps),
-    }
+    const versions = await buildTemplateVersions(
+      context,
+      {
+        include: [
+          ...NIL_SDK,
+          'functional-models',
+          'functional-models-orm-mcp',
+          'lodash',
+          'zod',
+          ...COMMON_DEV,
+        ],
+      },
+      crossLayerProps
+    )
     const data = {
-      versions,
+      ...versions,
       sdkName,
       systemName,
       fullSdkPackageName,

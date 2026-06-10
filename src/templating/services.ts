@@ -37,9 +37,13 @@ export const create = (context: ServicesContext): TemplatingServices => {
       throw new Error(`Could not find nil-toolkit's package.json file.`)
     }
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
-    const value = packageJson.dependencies[props.key]
+    const value =
+      packageJson.dependencies?.[props.key] ??
+      packageJson.devDependencies?.[props.key]
     if (!value) {
-      throw new Error(`${props.key} does not exist inside package.json`)
+      throw new Error(
+        `${props.key} does not exist inside package.json dependencies or devDependencies`
+      )
     }
     return value
   }

@@ -4,6 +4,12 @@ import { Namespace } from '../types.js'
 import { PackageServicesLayer } from '../package/types.js'
 import { TemplatingServicesLayer } from '../templating/types.js'
 import { applyTemplates, createValidName } from '../templating/libs.js'
+import {
+  buildTemplateVersions,
+  COMMON_DEV,
+  COMMON_RUNTIME,
+  NIL_BACKEND,
+} from '../templating/dependencyVersions.js'
 import { WorkspaceServicesLayer } from '../workspace/types.js'
 import { BackendServicesLayer } from './types.js'
 
@@ -15,24 +21,16 @@ type BackendCreateContext = FeaturesContext<
     PackageServicesLayer
 >
 
-const buildBackendDependencyVersions = async (
-  context: BackendCreateContext,
-  crossLayerProps?: CrossLayerProps
-) => {
-  const t = Namespace.templating
-  const get = (key: string) =>
-    context.services[t].getDependencyVersion({ key }, crossLayerProps)
-  return {
-    nodeInLayersCoreVersion: await get('@node-in-layers/core'),
-    nodeInLayersDataVersion: await get('@node-in-layers/data'),
-    nodeInLayersMcpServerVersion: await get('@node-in-layers/mcp-server'),
-    nodeInLayersRestServerVersion: await get('@node-in-layers/rest-api'),
-    functionalModelsVersion: await get('functional-models'),
-    functionalModelsOrmMcpVersion: await get('functional-models-orm-mcp'),
-    nodeInLayersAuthVersion: await get('@node-in-layers/auth'),
-    nodeInLayersSecretsVersion: await get('@node-in-layers/secrets'),
-  }
-}
+const BACKEND_RUNTIME = COMMON_RUNTIME.filter(pkg =>
+  [
+    'functional-models',
+    'functional-models-orm-mcp',
+    'argparse',
+    'es-main',
+    'express',
+    'zod',
+  ].includes(pkg)
+)
 
 const runBackendPackageLifecycle = (
   context: BackendCreateContext,
@@ -226,12 +224,13 @@ export const create = (context: BackendCreateContext) => {
       { name: 'backend', packageType, nested: backendType },
       crossLayerProps
     )
-    const versions = await buildBackendDependencyVersions(
+    const versions = await buildTemplateVersions(
       context,
+      { include: [...NIL_BACKEND, ...BACKEND_RUNTIME, ...COMMON_DEV] },
       crossLayerProps
     )
     const data = {
-      versions,
+      ...versions,
       backendName,
       systemName,
       fullBackendPackageName,

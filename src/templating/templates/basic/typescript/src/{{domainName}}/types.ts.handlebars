@@ -1,0 +1,11 @@
+export type {{domainNameTitleCase}}Services = Readonly<object> // add services here
+
+export type {{domainNameTitleCase}}ServicesLayer = Readonly<{
+  '{{namespace}}': {{domainNameTitleCase}}Services
+}>
+
+export type {{domainNameTitleCase}}Features = Readonly<object> // add features here
+
+export type {{domainNameTitleCase}}FeaturesLayer = Readonly<{
+  '{{namespace}}': {{domainNameTitleCase}}Features
+}>

@@ -3,6 +3,13 @@ import { FeaturesContext, Config, CrossLayerProps } from '@node-in-layers/core'
 import { Namespace } from '../types.js'
 import { TemplatingServicesLayer } from '../templating/types.js'
 import { applyTemplates, createValidName } from '../templating/libs.js'
+import {
+  buildTemplateVersions,
+  COMMON_DEV,
+  FRONTEND_DEV,
+  FRONTEND_RUNTIME,
+  NIL_FRONTEND,
+} from '../templating/dependencyVersions.js'
 import { PackageServicesLayer } from '../package/types.js'
 import { FrontendServicesLayer } from './types.js'
 
@@ -79,28 +86,22 @@ export const create = (
       { name: 'frontend', packageType, nested: framework },
       crossLayerProps
     )
-    const versions = {
-      nodeInLayersCoreVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion({ key: '@node-in-layers/core' }, crossLayerProps),
-      nodeInLayersMcpClientVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion(
-        { key: '@node-in-layers/mcp-client' },
-        crossLayerProps
-      ),
-      functionalModelsOrmMcpVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion(
-        { key: 'functional-models-orm-mcp' },
-        crossLayerProps
-      ),
-      functionalModelsVersion: await context.services[
-        Namespace.templating
-      ].getDependencyVersion({ key: 'functional-models' }, crossLayerProps),
-    }
+    const versions = await buildTemplateVersions(
+      context,
+      {
+        include: [
+          ...NIL_FRONTEND,
+          'functional-models',
+          'functional-models-orm-mcp',
+          ...FRONTEND_RUNTIME,
+          ...COMMON_DEV,
+          ...FRONTEND_DEV,
+        ],
+      },
+      crossLayerProps
+    )
     const data = {
-      versions,
+      ...versions,
       systemName,
       frontendName,
       fullFrontendPackageName,

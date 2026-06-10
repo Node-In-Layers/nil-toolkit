@@ -1,0 +1,9 @@
+import { {{domainNameTitleCase}}FeaturesLayer, {{domainNameTitleCase}}ServicesLayer } from '../{{domainName}}/types.js'
+
+/**
+ * This is the overall type for the context.
+ */
+export type System = Readonly<{
+  services: {{domainNameTitleCase}}ServicesLayer
+  features: {{domainNameTitleCase}}FeaturesLayer
+}>

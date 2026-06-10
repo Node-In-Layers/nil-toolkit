@@ -9,9 +9,9 @@ export type SystemJson = Readonly<{
   backends?: string[]
   frontends?: string[]
   /**
-   * When true, this nil.system.json represents a single SDK package
-   * (e.g. a library) rather than a full multi-package system.
-   * In this case the SDK is assumed to live at ./src.
+   * When true, this nil.system.json represents a single package
+   * (library, basic app, etc.) rather than a full multi-package system.
+   * Source lives at ./src.
    */
   isPackage?: boolean
 }>
