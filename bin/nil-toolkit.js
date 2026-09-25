@@ -1,13 +1,29 @@
 #!/usr/bin/env node
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { ArgumentParser } from 'argparse'
-import { loadSystem } from '../dist/entries.js'
 import camelCase from 'lodash/camelCase.js'
 import esMain from 'es-main'
+import { loadSystem } from '../dist/entries.js'
 import { Namespace } from '../dist/types.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const _getToolkitVersion = () => {
+  const packageJsonPath = path.join(__dirname, '../package.json')
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'))
+  return packageJson.version
+}
 
 const _parseArguments = () => {
   const parser = new ArgumentParser({
     description: 'A toolkit for dealing with Node In Layers systems.',
+  })
+  parser.add_argument('-v', '--version', {
+    action: 'version',
+    version: _getToolkitVersion(),
   })
   parser.add_argument('-f', '--logFormat', {
     help: 'Sets the format for logging. Defaults to simple.',
